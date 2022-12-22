@@ -116,20 +116,32 @@ int main(void) {
     glBindBuffer(GL_ARRAY_BUFFER, buffer);
 
 
-    const unsigned int VERTICES_NUM = 6;
-    float positions [VERTICES_NUM] = {
+    float positions [] = {
         -0.5f, -0.5f,
-        0.0f, 0.5f,
-        0.5f, -0.5f
+        0.5f, -0.5f,
+        0.5f, 0.5f,
+        -0.5f, 0.5f,
     };
 
-    glBufferData(GL_ARRAY_BUFFER, VERTICES_NUM * sizeof(float), positions, GL_STATIC_DRAW);
+    // Index vertices to save memory, only need to define 4 vertices instead of 6 to draw square
+    unsigned int indices[] = {
+        0, 1, 2,
+        2, 3, 0
+    };
+
+    glBufferData(GL_ARRAY_BUFFER, 6 * 2 * sizeof(float), positions, GL_STATIC_DRAW);
 
     // Specifying vertex layout below by enabling and configuring vertex vattributes
     // Enable vertex attributes
     glEnableVertexAttribArray(0);
     // Set up vertex attributes (position, colour, texture uv, normals)
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, 0); // position
+
+    // Generate and bind index buffer object
+    unsigned int ibo;
+    glGenBuffers(1, &ibo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(unsigned int), indices, GL_STATIC_DRAW);
 
 
     ShaderProgramSource shaderSource = parseShader("assets/shaders/shader.glsl");
@@ -142,16 +154,11 @@ int main(void) {
         /* Render here */
         glClear(GL_COLOR_BUFFER_BIT);
 
-        // LEGACY Testing code - fixed pipeline, don't use this, unless for testing, debug reasons
-        //glBegin(GL_TRIANGLES);
-        //glVertex2f(-0.5f, -0.5f);
-        //glVertex2f(0.0f, 0.5f);
-        //glVertex2f(0.5f, -0.5f);
-        //glEnd();
+        // Use this if we dont have index buffer, problem with this is we duplicate vertices when describing them
+        //glDrawArrays(GL_TRIANGLES, 0, 6);
 
-        // Use this if we dont have index buffer
-        glDrawArrays(GL_TRIANGLES, 0, 3);
-
+        // Needs index buffer object, but this way we save memory and vertex data is smaller
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
 
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
