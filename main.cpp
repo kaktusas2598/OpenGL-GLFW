@@ -1,4 +1,7 @@
+#include <GL/glew.h>
 #include <GLFW/glfw3.h>
+
+#include <iostream>
 
 int main(void)
 {
@@ -19,6 +22,12 @@ int main(void)
     /* Make the window's context current */
     glfwMakeContextCurrent(window);
 
+    if (glewInit() != GLEW_OK) {
+        std::cout << "Coult not initialise Glew!" << std::endl;
+    }
+
+    std::cout << "OpenGL Version: " << glGetString(GL_VERSION) << std::endl;
+
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
     {
@@ -26,7 +35,7 @@ int main(void)
         glClear(GL_COLOR_BUFFER_BIT);
 
 
-        // LEGACY Testin code
+        // LEGACY Testing code
         glBegin(GL_TRIANGLES);
         glVertex2f(-0.5f, -0.5f);
         glVertex2f(0.0f, 0.5f);
