@@ -130,6 +130,8 @@ int main(void) {
     /* Make the window's context current */
     glfwMakeContextCurrent(window);
 
+    glfwSwapInterval(1);
+
     if (glewInit() != GLEW_OK) {
         std::cout << "Coult not initialise Glew!" << std::endl;
     }
@@ -175,6 +177,12 @@ int main(void) {
     unsigned int shader = createShader(shaderSource.VertexSource, shaderSource.FragmentSource);
     glUseProgram(shader);
 
+    int location = glGetUniformLocation(shader, "u_Color");
+    ASSERT(location != -1);
+
+    float r = 0.0f;
+    float inc = 0.05f;
+
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window)) {
         /* Render here */
@@ -183,8 +191,16 @@ int main(void) {
         // Use this if we dont have index buffer, problem with this is we duplicate vertices when describing them
         //glDrawArrays(GL_TRIANGLES, 0, 6);
 
+        glUniform4f(location, r, 0.3f, 0.8f, 1.0f);
         // Needs index buffer object, but this way we save memory and vertex data is smaller
         GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));
+
+        if (r > 1.0f) {
+            inc = -0.05f;
+        } else if (r < 0.0f) {
+            inc = 0.05f;
+        }
+        r += inc;
 
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
