@@ -119,6 +119,11 @@ int main(void) {
     if (!glfwInit())
         return -1;
 
+    // Enable GL Core Profile in GLFW
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
     /* Create a windowed mode window and its OpenGL context */
     window = glfwCreateWindow(640, 480, "Hello World", NULL, NULL);
     if (!window)
@@ -138,13 +143,6 @@ int main(void) {
 
     std::cout << "OpenGL Version: " << glGetString(GL_VERSION) << std::endl;
 
-    // Generate vertex buffers
-    unsigned int buffer;
-    glGenBuffers(1, &buffer);
-
-    glBindBuffer(GL_ARRAY_BUFFER, buffer);
-
-
     float positions [] = {
         -0.5f, -0.5f, // 0
         0.5f, -0.5f, // 1
@@ -158,7 +156,19 @@ int main(void) {
         2, 3, 0 // 2nd triangle indices
     };
 
-    glBufferData(GL_ARRAY_BUFFER, 6 * 2 * sizeof(float), positions, GL_STATIC_DRAW);
+    // Using vertex array means we dont need to specigy vertex attributes every time we draw
+    // also let's us specify different vertex layouts, default vao can be used with compability profile
+    // core profile requires vao to be set
+    unsigned int vao;
+    glGenVertexArrays(1, &vao);
+    glBindVertexArray(vao);
+
+
+    // Generate and bind vertex buffers
+    unsigned int buffer;
+    glGenBuffers(1, &buffer);
+    glBindBuffer(GL_ARRAY_BUFFER, buffer);
+    glBufferData(GL_ARRAY_BUFFER, 4 * 2 * sizeof(float), positions, GL_STATIC_DRAW);
 
     // Specifying vertex layout below by enabling and configuring vertex vattributes
     // Enable vertex attributes
@@ -180,6 +190,12 @@ int main(void) {
     int location = glGetUniformLocation(shader, "u_Color");
     ASSERT(location != -1);
 
+    // Unbind everything after setting it up, then bind again before drawing
+    glBindVertexArray(0);
+    glUseProgram(0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
     float r = 0.0f;
     float inc = 0.05f;
 
@@ -191,7 +207,13 @@ int main(void) {
         // Use this if we dont have index buffer, problem with this is we duplicate vertices when describing them
         //glDrawArrays(GL_TRIANGLES, 0, 6);
 
+        glUseProgram(shader);
         glUniform4f(location, r, 0.3f, 0.8f, 1.0f);
+
+        // By using vertex array obbject, we dont need to bind array buffer and vertex attributes 2nd time
+        glBindVertexArray(vao);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+
         // Needs index buffer object, but this way we save memory and vertex data is smaller
         GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));
 
