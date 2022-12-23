@@ -2,7 +2,8 @@
 #define __VertexArray__
 
 #include "VertexBuffer.hpp"
-#include "VertexBufferLayout.hpp"
+
+class VertexBufferLayout;
 
 class VertexArray {
     public:

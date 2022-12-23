@@ -3,6 +3,11 @@
 
 #include <GL/glew.h>
 
+#include "VertexArray.hpp"
+#include "IndexBuffer.hpp"
+#include "Shader.hpp"
+
+
 // In Vigilant, these Macros below will only, if at all, will be used for debug builds only
 //#ifdef DEBUG
     //#define GLCall(x) GLClearError(); x; ASSERT(GLLogCall(...))
@@ -21,5 +26,13 @@
 
 void GLClearError();
 bool GLLogCall(const char* func, const char* file, int line);
+
+
+class Renderer {
+    public:
+        void clear() const;
+        void draw(const VertexArray& va, const IndexBuffer& ib, const Shader& shader) const;
+    private:
+};
 
 #endif // __Renderer__

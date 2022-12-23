@@ -9,9 +9,7 @@
 #include "Renderer.hpp"
 
 #include "VertexBuffer.hpp"
-#include "IndexBuffer.hpp"
-#include "VertexArray.hpp"
-#include "Shader.hpp"
+#include "VertexBufferLayout.hpp"
 
 int main(void) {
     GLFWwindow* window;
@@ -57,6 +55,13 @@ int main(void) {
         2, 3, 0 // 2nd triangle indices
     };
 
+    // OpenGL is a State machine, so things need to be done in certain order, so usually
+    // you create vertex array, then vertex buffer
+    // then you specify vertex layout/attrivutes, bind buffer
+    // after that you generate index buffer to remove number of indices
+    //
+    // and finally define, compile and link shaders?
+
     // Using vertex array means we dont need to specify vertex attributes every time we draw
     // also let's us specify different vertex layouts, default vao can be used with compability profile
     // core profile requires vao to be set
@@ -84,20 +89,23 @@ int main(void) {
     float r = 0.0f;
     float inc = 0.05f;
 
+    Renderer renderer;
+
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window)) {
         /* Render here */
-        glClear(GL_COLOR_BUFFER_BIT);
+        renderer.clear();
 
         shader.bind();
         shader.setUniform4f("u_Color", r, 0.3f, 0.8f, 1.0f);
 
+        renderer.draw(va, ib, shader);
         // By using vertex array obbject, we dont need to bind array buffer and vertex attributes 2nd time
-        va.bind();
-        ib.bind();
+        //va.bind();
+        //ib.bind();
 
         // Needs index buffer object, but this way we save memory and vertex data is smaller
-        GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));
+        //GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));
 
         if (r > 1.0f) {
             inc = -0.05f;
