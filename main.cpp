@@ -6,6 +6,33 @@
 #include <string>
 #include <sstream>
 
+// In Vigilant, these Macros below will only, if at all, will be used for debug builds only
+//#ifdef DEBUG
+    //#define GLCall(x) GLClearError(); x; ASSERT(GLLogCall(...))
+//#else
+    //#define GLCall(x) x
+//#endif
+
+// raise() is POSIX system specific
+// could not use _debugbreak() because it's MVSC specific
+#include <signal.h>
+#define ASSERT(x) if(!(x)) raise(SIGABRT)
+#define GLCall(x) GLClearError();\
+    x;\
+    ASSERT(GLLogCall(#x, __FILE__, __LINE__))
+
+static void GLClearError() {
+    while(glGetError() != GL_NO_ERROR);
+}
+
+static bool GLLogCall(const char* func, const char* file, int line) {
+    while(GLenum error = glGetError()) {
+        std::cout << "[OpenGL Error] " << "(" << error << "): " << func << " " << file << ":" << line << std::endl;
+        return false;
+    }
+    return true;
+}
+
 struct ShaderProgramSource {
     std::string VertexSource;
     std::string FragmentSource;
@@ -117,16 +144,16 @@ int main(void) {
 
 
     float positions [] = {
-        -0.5f, -0.5f,
-        0.5f, -0.5f,
-        0.5f, 0.5f,
-        -0.5f, 0.5f,
+        -0.5f, -0.5f, // 0
+        0.5f, -0.5f, // 1
+        0.5f, 0.5f, // 2
+        -0.5f, 0.5f, // 3
     };
 
     // Index vertices to save memory, only need to define 4 vertices instead of 6 to draw square
     unsigned int indices[] = {
-        0, 1, 2,
-        2, 3, 0
+        0, 1, 2, // 1st triangle indices
+        2, 3, 0 // 2nd triangle indices
     };
 
     glBufferData(GL_ARRAY_BUFFER, 6 * 2 * sizeof(float), positions, GL_STATIC_DRAW);
@@ -149,8 +176,7 @@ int main(void) {
     glUseProgram(shader);
 
     /* Loop until the user closes the window */
-    while (!glfwWindowShouldClose(window))
-    {
+    while (!glfwWindowShouldClose(window)) {
         /* Render here */
         glClear(GL_COLOR_BUFFER_BIT);
 
@@ -158,7 +184,7 @@ int main(void) {
         //glDrawArrays(GL_TRIANGLES, 0, 6);
 
         // Needs index buffer object, but this way we save memory and vertex data is smaller
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
+        GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));
 
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
