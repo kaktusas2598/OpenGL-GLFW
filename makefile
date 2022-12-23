@@ -3,7 +3,7 @@
 #  Or 'make debug' to compile with debug symbols
 #
 #SOURCES
-OBJS= src/*.cpp
+OBJS= src/*.cpp src/vendor/*.cpp
 
 #COMPILER
 CC= g++ # Or clang++
@@ -32,7 +32,7 @@ else
 LDF+= -lmingw32 -mwindows -lglfw3 -lgdi32 -lglew32  -lopengl32 -lm
 endif
 
-INCLUDE_PATHS = -I/usr/local/include -I/opt/X11/include
+INCLUDE_PATHS = -I/usr/local/include -I/opt/X11/include -Isrc/vendor
 LIBRARY_PATHS = -L/usr/local/lib -L/opt/X11/lib -Lsrc/lib
 OBJ_NAME= main
 
