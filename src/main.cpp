@@ -6,32 +6,10 @@
 #include <string>
 #include <sstream>
 
-// In Vigilant, these Macros below will only, if at all, will be used for debug builds only
-//#ifdef DEBUG
-    //#define GLCall(x) GLClearError(); x; ASSERT(GLLogCall(...))
-//#else
-    //#define GLCall(x) x
-//#endif
+#include "Renderer.hpp"
+#include "VertexBuffer.hpp"
+#include "IndexBuffer.hpp"
 
-// raise() is POSIX system specific
-// could not use _debugbreak() because it's MVSC specific
-#include <signal.h>
-#define ASSERT(x) if(!(x)) raise(SIGABRT)
-#define GLCall(x) GLClearError();\
-    x;\
-    ASSERT(GLLogCall(#x, __FILE__, __LINE__))
-
-static void GLClearError() {
-    while(glGetError() != GL_NO_ERROR);
-}
-
-static bool GLLogCall(const char* func, const char* file, int line) {
-    while(GLenum error = glGetError()) {
-        std::cout << "[OpenGL Error] " << "(" << error << "): " << func << " " << file << ":" << line << std::endl;
-        return false;
-    }
-    return true;
-}
 
 struct ShaderProgramSource {
     std::string VertexSource;
@@ -165,10 +143,7 @@ int main(void) {
 
 
     // Generate and bind vertex buffers
-    unsigned int buffer;
-    glGenBuffers(1, &buffer);
-    glBindBuffer(GL_ARRAY_BUFFER, buffer);
-    glBufferData(GL_ARRAY_BUFFER, 4 * 2 * sizeof(float), positions, GL_STATIC_DRAW);
+    VertexBuffer vb(positions, 4 * 2 * sizeof(float));
 
     // Specifying vertex layout below by enabling and configuring vertex vattributes
     // Enable vertex attributes
@@ -177,11 +152,7 @@ int main(void) {
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, 0); // position
 
     // Generate and bind index buffer object
-    unsigned int ibo;
-    glGenBuffers(1, &ibo);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(unsigned int), indices, GL_STATIC_DRAW);
-
+    IndexBuffer ib(indices, 6);
 
     ShaderProgramSource shaderSource = parseShader("assets/shaders/shader.glsl");
     unsigned int shader = createShader(shaderSource.VertexSource, shaderSource.FragmentSource);
@@ -204,15 +175,12 @@ int main(void) {
         /* Render here */
         glClear(GL_COLOR_BUFFER_BIT);
 
-        // Use this if we dont have index buffer, problem with this is we duplicate vertices when describing them
-        //glDrawArrays(GL_TRIANGLES, 0, 6);
-
         glUseProgram(shader);
         glUniform4f(location, r, 0.3f, 0.8f, 1.0f);
 
         // By using vertex array obbject, we dont need to bind array buffer and vertex attributes 2nd time
         glBindVertexArray(vao);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+        ib.bind();
 
         // Needs index buffer object, but this way we save memory and vertex data is smaller
         GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));
@@ -233,6 +201,9 @@ int main(void) {
 
     glDeleteProgram(shader);
 
+    // If allocating index and vertex buffers on the heap, delete them here
+    // currently they are allocated on stack and this causes program to hand due to gl get error loop
+    // complaining about no context
     glfwTerminate();
     return 0;
 }
