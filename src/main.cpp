@@ -142,8 +142,9 @@ int main(void) {
     glBindVertexArray(vao);
 
 
+    // Only creating VB and IB on the heap because then we can clear that memory before glfw terminate call
     // Generate and bind vertex buffers
-    VertexBuffer vb(positions, 4 * 2 * sizeof(float));
+    VertexBuffer* vb = new VertexBuffer(positions, 4 * 2 * sizeof(float));
 
     // Specifying vertex layout below by enabling and configuring vertex vattributes
     // Enable vertex attributes
@@ -152,7 +153,7 @@ int main(void) {
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, 0); // position
 
     // Generate and bind index buffer object
-    IndexBuffer ib(indices, 6);
+    IndexBuffer* ib = new IndexBuffer(indices, 6);
 
     ShaderProgramSource shaderSource = parseShader("assets/shaders/shader.glsl");
     unsigned int shader = createShader(shaderSource.VertexSource, shaderSource.FragmentSource);
@@ -180,7 +181,7 @@ int main(void) {
 
         // By using vertex array obbject, we dont need to bind array buffer and vertex attributes 2nd time
         glBindVertexArray(vao);
-        ib.bind();
+        ib->bind();
 
         // Needs index buffer object, but this way we save memory and vertex data is smaller
         GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));
@@ -204,6 +205,9 @@ int main(void) {
     // If allocating index and vertex buffers on the heap, delete them here
     // currently they are allocated on stack and this causes program to hand due to gl get error loop
     // complaining about no context
+    delete vb;
+    delete ib;
+
     glfwTerminate();
     return 0;
 }
