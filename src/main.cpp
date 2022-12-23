@@ -7,8 +7,10 @@
 #include <sstream>
 
 #include "Renderer.hpp"
+
 #include "VertexBuffer.hpp"
 #include "IndexBuffer.hpp"
+#include "VertexArray.hpp"
 
 
 struct ShaderProgramSource {
@@ -134,26 +136,19 @@ int main(void) {
         2, 3, 0 // 2nd triangle indices
     };
 
-    // Using vertex array means we dont need to specigy vertex attributes every time we draw
+    // Using vertex array means we dont need to specify vertex attributes every time we draw
     // also let's us specify different vertex layouts, default vao can be used with compability profile
     // core profile requires vao to be set
-    unsigned int vao;
-    glGenVertexArrays(1, &vao);
-    glBindVertexArray(vao);
+    VertexArray va;
+    VertexBuffer vb(positions, 4 * 2 * sizeof(float));
 
+    VertexBufferLayout layout;
+    layout.push<float>(2); // our layout is 2 floats
 
-    // Only creating VB and IB on the heap because then we can clear that memory before glfw terminate call
-    // Generate and bind vertex buffers
-    VertexBuffer* vb = new VertexBuffer(positions, 4 * 2 * sizeof(float));
-
-    // Specifying vertex layout below by enabling and configuring vertex vattributes
-    // Enable vertex attributes
-    glEnableVertexAttribArray(0);
-    // Set up vertex attributes (position, colour, texture uv, normals)
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, 0); // position
+    va.addBuffer(vb, layout);
 
     // Generate and bind index buffer object
-    IndexBuffer* ib = new IndexBuffer(indices, 6);
+    IndexBuffer ib(indices, 6);
 
     ShaderProgramSource shaderSource = parseShader("assets/shaders/shader.glsl");
     unsigned int shader = createShader(shaderSource.VertexSource, shaderSource.FragmentSource);
@@ -180,8 +175,8 @@ int main(void) {
         glUniform4f(location, r, 0.3f, 0.8f, 1.0f);
 
         // By using vertex array obbject, we dont need to bind array buffer and vertex attributes 2nd time
-        glBindVertexArray(vao);
-        ib->bind();
+        va.bind();
+        ib.bind();
 
         // Needs index buffer object, but this way we save memory and vertex data is smaller
         GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));
@@ -205,8 +200,6 @@ int main(void) {
     // If allocating index and vertex buffers on the heap, delete them here
     // currently they are allocated on stack and this causes program to hand due to gl get error loop
     // complaining about no context
-    delete vb;
-    delete ib;
 
     glfwTerminate();
     return 0;
