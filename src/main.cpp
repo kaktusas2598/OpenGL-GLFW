@@ -9,6 +9,12 @@
 
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
+// For glm::to_string()
+//#include "glm/ext.hpp"
+#include "glm/gtx/string_cast.hpp"
+
+const int screenWidth = 1024;
+const int screenHeight = 768;
 
 int main(void) {
     GLFWwindow* window;
@@ -23,7 +29,7 @@ int main(void) {
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     /* Create a windowed mode window and its OpenGL context */
-    window = glfwCreateWindow(1024, 768, "OpenGL test", NULL, NULL);
+    window = glfwCreateWindow(screenWidth, screenHeight, "OpenGL test", NULL, NULL);
     if (!window)
     {
         glfwTerminate();
@@ -46,10 +52,10 @@ int main(void) {
 
     // 1st 2 floats position, 2nd two - tex coords
     float positions [] = {
-        -0.5f, -0.5f, 0.0f, 0.0f, // 0
-        0.5f, -0.5f, 1.0f, 0.0f, // 1
-        0.5f, 0.5f, 1.0f, 1.0f, // 2
-        -0.5f, 0.5f, 0.0f, 1.0f// 3
+        100.0f, 100.0f, 0.0f, 0.0f, // 0
+        600.0, 100.0f, 1.0f, 0.0f, // 1
+        600.0f, 400.0f, 1.0f, 1.0f, // 2
+        100.0f, 400.0f, 0.0f, 1.0f// 3
     };
 
     // Index vertices to save memory, only need to define 4 vertices instead of 6 to draw square
@@ -81,12 +87,28 @@ int main(void) {
     IndexBuffer ib(indices, 6);
 
     // Create 4:3 aspect ratio projection ortographic matrix
-    glm::mat4 proj = glm::ortho(-2.0f, 2.0f, -1.5f, 1.5f, -1.0f, 1.0f);
+    // This helps us use easier coords system, and it gets converted back to GL system in vertex shader, by multypling
+    // each vertex position by this matrix
+    glm::mat4 proj = glm::ortho(0.0f, (float)screenWidth, 0.0f, (float)screenHeight, -1.0f, 1.0f);
+    // Creating view matrix, first param here is identity view matrix
+    glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(-100, 0, 0));
+    // Creating model matrix for transformations
+    glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(200, 200, 0));
+
+    // MVP gets multiplied in reverse order here, because OpenGL stores matrices in column order
+    // On Direct x this multiplication would be model * view * proj
+    glm::mat4 mvp = proj * view * model;
+
+    // Demonstration of how our vertex position goes back to gl coords system by multiplying
+    glm::vec4 vp(100.0f, 100.0f, 0.0f, 1.0f);
+    glm::vec4 result = proj * vp;
+    std::cout << "Vertex position as defined by us: "<< glm::to_string(vp) << std::endl;
+    std::cout << "Vertex position after being multiplied with projection matrix: "<< glm::to_string(result) << std::endl;
 
     Shader shader("assets/shaders/shader.glsl");
     shader.bind();
     shader.setUniform4f("u_Color", 0.8f, 0.3f, 0.8f, 1.0f);
-    shader.setUniformMat4f("u_MVP", proj);
+    shader.setUniformMat4f("u_MVP", mvp);
 
 
     Texture texture("assets/textures/slime.png");
