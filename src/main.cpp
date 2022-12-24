@@ -142,6 +142,8 @@ int main(void) {
     Renderer renderer;
     bool show_demo_window = true;
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+    float scale = 0.5;
+    float rotation = 90.0f;
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window)) {
@@ -154,6 +156,8 @@ int main(void) {
 
         // Creating model matrix for transformations
         glm::mat4 model = glm::translate(glm::mat4(1.0f), translation);
+        model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0, 0.0, 1.0));
+        model = glm::scale(model, glm::vec3(scale, scale, scale));
 
         // MVP gets multiplied in reverse order here, because OpenGL stores matrices in column order
         // On Direct x this multiplication would be model * view * proj
@@ -191,6 +195,9 @@ int main(void) {
             ImGui::SliderFloat("Translation X", &translation.x, 0.0f, screenWidth);
             ImGui::SliderFloat("Translation Y", &translation.y, 0.0f, screenHeight);
             ImGui::SliderFloat("Translation Z", &translation.z, -1.0f, 1.0f);
+            ImGui::SliderFloat("Scale", &scale, 0.0f, 10.0f);
+            ImGui::SliderFloat("Rotation", &rotation, 0.0f, 90.0f);
+            ImGui::Text("View Matrix", counter);
 
             if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
                 counter++;
