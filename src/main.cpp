@@ -2,16 +2,13 @@
 #include <GLFW/glfw3.h>
 
 #include <iostream>
-#include <fstream>
-#include <string>
-#include <sstream>
-
 #include "Renderer.hpp"
-
 #include "VertexBuffer.hpp"
 #include "VertexBufferLayout.hpp"
-
 #include "Texture.hpp"
+
+#include "glm/glm.hpp"
+#include "glm/gtc/matrix_transform.hpp"
 
 int main(void) {
     GLFWwindow* window;
@@ -26,7 +23,7 @@ int main(void) {
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     /* Create a windowed mode window and its OpenGL context */
-    window = glfwCreateWindow(640, 480, "Hello World", NULL, NULL);
+    window = glfwCreateWindow(1024, 768, "OpenGL test", NULL, NULL);
     if (!window)
     {
         glfwTerminate();
@@ -83,9 +80,13 @@ int main(void) {
     // Generate and bind index buffer object
     IndexBuffer ib(indices, 6);
 
+    // Create 4:3 aspect ratio projection ortographic matrix
+    glm::mat4 proj = glm::ortho(-2.0f, 2.0f, -1.5f, 1.5f, -1.0f, 1.0f);
+
     Shader shader("assets/shaders/shader.glsl");
     shader.bind();
     shader.setUniform4f("u_Color", 0.8f, 0.3f, 0.8f, 1.0f);
+    shader.setUniformMat4f("u_MVP", proj);
 
 
     Texture texture("assets/textures/slime.png");
@@ -113,12 +114,6 @@ int main(void) {
         shader.setUniform4f("u_Color", r, 0.3f, 0.8f, 1.0f);
 
         renderer.draw(va, ib, shader);
-        // By using vertex array obbject, we dont need to bind array buffer and vertex attributes 2nd time
-        //va.bind();
-        //ib.bind();
-
-        // Needs index buffer object, but this way we save memory and vertex data is smaller
-        //GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));
 
         if (r > 1.0f) {
             inc = -0.05f;
