@@ -15,11 +15,7 @@
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 // For glm::to_string()
-//#include "glm/ext.hpp"
 #include "glm/gtx/string_cast.hpp"
-
-const int screenWidth = 1024;
-const int screenHeight = 768;
 
 int main(void) {
     GLFWwindow* window;
@@ -33,8 +29,18 @@ int main(void) {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
+    GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+    const GLFWvidmode* mode = glfwGetVideoMode(monitor);
+
+    glfwWindowHint(GLFW_RED_BITS, mode->redBits);
+    glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
+    glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
+    glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
+    const int screenWidth = mode->width;
+    const int screenHeight = mode->height;
+
     /* Create a windowed mode window and its OpenGL context */
-    window = glfwCreateWindow(screenWidth, screenHeight, "OpenGL test", NULL, NULL);
+    window = glfwCreateWindow(mode->width, mode->height, "OpenGL test", monitor, NULL);
     if (!window)
     {
         glfwTerminate();
@@ -109,8 +115,6 @@ int main(void) {
     // This helps us use easier coords system, and it gets converted back to GL system in vertex shader, by multypling
     // each vertex position by this matrix
     glm::mat4 proj = glm::ortho(0.0f, (float)screenWidth, 0.0f, (float)screenHeight, -1.0f, 1.0f);
-    // Creating view matrix, first param here is identity view matrix
-    glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(-100, 0, 0));
 
     // Demonstration of how our vertex position goes back to gl coords system by multiplying
     glm::vec4 vp(100.0f, 100.0f, 0.0f, 1.0f);
@@ -137,7 +141,9 @@ int main(void) {
     float r = 0.0f;
     float inc = 0.05f;
 
-    glm::vec3 translation(200, 200, 0);
+    glm::vec3 translationA(200, 200, 0);
+    glm::vec3 translationB(600, 200, 0);
+    glm::vec3 cameraTranslation(0, 0, 0);
 
     Renderer renderer;
     bool show_demo_window = true;
@@ -154,20 +160,29 @@ int main(void) {
         glClearColor(clear_color.x * clear_color.w, clear_color.y * clear_color.w, clear_color.z * clear_color.w, clear_color.w);
         renderer.clear();
 
+        // Creating view matrix, first param here is identity view matrix
+        glm::mat4 view = glm::translate(glm::mat4(1.0f), cameraTranslation);
         // Creating model matrix for transformations
-        glm::mat4 model = glm::translate(glm::mat4(1.0f), translation);
-        model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0, 0.0, 1.0));
-        model = glm::scale(model, glm::vec3(scale, scale, scale));
+        glm::mat4 modelA = glm::translate(glm::mat4(1.0f), translationA);
+        modelA = glm::rotate(modelA, glm::radians(rotation), glm::vec3(0.0, 0.0, 1.0));
+        modelA = glm::scale(modelA, glm::vec3(scale, scale, scale));
 
         // MVP gets multiplied in reverse order here, because OpenGL stores matrices in column order
         // On Direct x this multiplication would be model * view * proj
-        glm::mat4 mvp = proj * view * model;
+        glm::mat4 mvpA = proj * view * modelA;
 
 
         shader.bind();
         shader.setUniform4f("u_Color", r, 0.3f, 0.8f, 1.0f);
-        shader.setUniformMat4f("u_MVP", mvp);
+        shader.setUniformMat4f("u_MVP", mvpA);
+        renderer.draw(va, ib, shader);
 
+        // One way to draw multiple objects is to apply different mvp as in here, which is fast,
+        // another way is to allocate another Vertex Buffer, for something like drawing tiles we want to have one call to
+        // save on performance so we use Batch Rendering for that
+        glm::mat4 modelB = glm::translate(glm::mat4(1.0f), translationB);
+        glm::mat4 mvpB = proj * view * modelB;
+        shader.setUniformMat4f("u_MVP", mvpB);
         renderer.draw(va, ib, shader);
 
         if (r > 1.0f) {
@@ -181,9 +196,6 @@ int main(void) {
             ImGui::ShowDemoWindow(&show_demo_window);
 
         {
-            static float f = 0.0f;
-            static int counter = 0;
-
             ImGui::Begin("Settings");
 
             ImGui::Text("This is some useful text.");               // Display some text (you can use a format strings too)
@@ -192,17 +204,16 @@ int main(void) {
             ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
 
             ImGui::Text("Model Matrix", counter);
-            ImGui::SliderFloat("Translation X", &translation.x, 0.0f, screenWidth);
-            ImGui::SliderFloat("Translation Y", &translation.y, 0.0f, screenHeight);
-            ImGui::SliderFloat("Translation Z", &translation.z, -1.0f, 1.0f);
-            ImGui::SliderFloat("Scale", &scale, 0.0f, 10.0f);
-            ImGui::SliderFloat("Rotation", &rotation, 0.0f, 90.0f);
-            ImGui::Text("View Matrix", counter);
+            ImGui::SliderFloat("Translation X", &translationA.x, 0.0f, screenWidth);
+            ImGui::SliderFloat("Translation Y", &translationA.y, 0.0f, screenHeight);
+            ImGui::SliderFloat("Translation Z", &translationA.z, -1.0f, 1.0f);
+            ImGui::SliderFloat("Scale", &scale, 0.0f, 5.0f);
+            ImGui::SliderFloat("Rotation", &rotation, -180.0f, 180.0f);
+            ImGui::Text("View Matrix");
+            ImGui::SliderFloat("Translation X", &cameraTranslation.x, 0.0f, screenWidth);
+            ImGui::SliderFloat("Translation Y", &cameraTranslation.y, 0.0f, screenHeight);
+            ImGui::SliderFloat("Translation Z", &cameraTranslation.z, -1.0f, 1.0f);
 
-            if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
-                counter++;
-            ImGui::SameLine();
-            ImGui::Text("counter = %d", counter);
 
             ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
             ImGui::End();
