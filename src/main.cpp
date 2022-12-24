@@ -1,3 +1,8 @@
+#include "imgui/imgui.h"
+#include "imgui/imgui_impl_glfw.h"
+#include "imgui/imgui_impl_opengl3.h"
+#include <stdio.h>
+
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
@@ -39,11 +44,25 @@ int main(void) {
     /* Make the window's context current */
     glfwMakeContextCurrent(window);
 
-    glfwSwapInterval(1);
+    glfwSwapInterval(1); // Enable vsync
 
     if (glewInit() != GLEW_OK) {
         std::cout << "Coult not initialise Glew!" << std::endl;
     }
+
+    // imgui gl context
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO(); (void)io;
+
+
+    //imgui style
+    ImGui::StyleColorsDark();
+
+    ImGui_ImplGlfw_InitForOpenGL(window, true);
+    ImGui_ImplOpenGL3_Init("#version 330");
+
+
 
     std::cout << "OpenGL Version: " << glGetString(GL_VERSION) << std::endl;
 
@@ -92,12 +111,6 @@ int main(void) {
     glm::mat4 proj = glm::ortho(0.0f, (float)screenWidth, 0.0f, (float)screenHeight, -1.0f, 1.0f);
     // Creating view matrix, first param here is identity view matrix
     glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(-100, 0, 0));
-    // Creating model matrix for transformations
-    glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(200, 200, 0));
-
-    // MVP gets multiplied in reverse order here, because OpenGL stores matrices in column order
-    // On Direct x this multiplication would be model * view * proj
-    glm::mat4 mvp = proj * view * model;
 
     // Demonstration of how our vertex position goes back to gl coords system by multiplying
     glm::vec4 vp(100.0f, 100.0f, 0.0f, 1.0f);
@@ -108,7 +121,6 @@ int main(void) {
     Shader shader("assets/shaders/shader.glsl");
     shader.bind();
     shader.setUniform4f("u_Color", 0.8f, 0.3f, 0.8f, 1.0f);
-    shader.setUniformMat4f("u_MVP", mvp);
 
 
     Texture texture("assets/textures/slime.png");
@@ -125,15 +137,32 @@ int main(void) {
     float r = 0.0f;
     float inc = 0.05f;
 
+    glm::vec3 translation(200, 200, 0);
+
     Renderer renderer;
+    bool show_demo_window = true;
+    ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window)) {
-        /* Render here */
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
+
+        glClearColor(clear_color.x * clear_color.w, clear_color.y * clear_color.w, clear_color.z * clear_color.w, clear_color.w);
         renderer.clear();
+
+        // Creating model matrix for transformations
+        glm::mat4 model = glm::translate(glm::mat4(1.0f), translation);
+
+        // MVP gets multiplied in reverse order here, because OpenGL stores matrices in column order
+        // On Direct x this multiplication would be model * view * proj
+        glm::mat4 mvp = proj * view * model;
+
 
         shader.bind();
         shader.setUniform4f("u_Color", r, 0.3f, 0.8f, 1.0f);
+        shader.setUniformMat4f("u_MVP", mvp);
 
         renderer.draw(va, ib, shader);
 
@@ -144,12 +173,48 @@ int main(void) {
         }
         r += inc;
 
+        if (show_demo_window)
+            ImGui::ShowDemoWindow(&show_demo_window);
+
+        {
+            static float f = 0.0f;
+            static int counter = 0;
+
+            ImGui::Begin("Settings");
+
+            ImGui::Text("This is some useful text.");               // Display some text (you can use a format strings too)
+            ImGui::Checkbox("Demo Window", &show_demo_window);      // Edit bools storing our window open/close state
+
+            ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
+
+            ImGui::Text("Model Matrix", counter);
+            ImGui::SliderFloat("Translation X", &translation.x, 0.0f, screenWidth);
+            ImGui::SliderFloat("Translation Y", &translation.y, 0.0f, screenHeight);
+            ImGui::SliderFloat("Translation Z", &translation.z, -1.0f, 1.0f);
+
+            if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
+                counter++;
+            ImGui::SameLine();
+            ImGui::Text("counter = %d", counter);
+
+            ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+            ImGui::End();
+        }
+
+
+        ImGui::Render();
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
 
         /* Poll for and process events */
         glfwPollEvents();
     }
+
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
+
 
     // If allocating index and vertex buffers on the heap, delete them here
     // currently they are allocated on stack and this causes program to hand due to gl get error loop

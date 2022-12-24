@@ -3,7 +3,7 @@
 #  Or 'make debug' to compile with debug symbols
 #
 #SOURCES
-OBJS= src/*.cpp src/vendor/*.cpp
+OBJS= src/*.cpp src/vendor/*.cpp src/vendor/imgui/*.cpp
 
 #COMPILER
 CC= g++ # Or clang++
