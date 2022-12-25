@@ -19,6 +19,7 @@
 
 #include "tests/TestClearColor.hpp"
 #include "tests/TestTexture2D.hpp"
+#include "tests/TestBatchRendering.hpp"
 
 int main(void) {
     GLFWwindow* window;
@@ -87,6 +88,7 @@ int main(void) {
 
     testMenu->registerTest<test::TestClearColor>("Clear Color");
     testMenu->registerTest<test::TestTexture2D>("2D Textures");
+    testMenu->registerTest<test::TestBatchRendering>("Batch rendering");
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window)) {
