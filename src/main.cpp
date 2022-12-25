@@ -153,7 +153,11 @@ int main(void) {
     float scale = 0.5;
     float rotation = 90.0f;
 
-    test::TestClearColor test;
+    test::Test* currentTest = nullptr;
+    test::TestMenu* testMenu = new test::TestMenu(currentTest);
+    currentTest = testMenu;
+
+    testMenu->registerTest<test::TestClearColor>("Clear Color");
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window)) {
@@ -161,12 +165,21 @@ int main(void) {
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
+        if (currentTest) {
+            currentTest->onUpdate(0.0f);
+            currentTest->onRender();
+            ImGui::Begin("Test");
+            if (currentTest != testMenu && ImGui::Button("<-")) {
+                delete currentTest;
+                currentTest = testMenu;
+            }
+            currentTest->onImGuiRender(); // Must be after new imgui frame
+            ImGui::End();
+        }
+
         glClearColor(clear_color.x * clear_color.w, clear_color.y * clear_color.w, clear_color.z * clear_color.w, clear_color.w);
         renderer.clear();
 
-        test.onUpdate(0.0f);
-        test.onRender();
-        test.onImGuiRender(); // Must be after new imgui frame
 
         // Creating view matrix, first param here is identity view matrix
         glm::mat4 view = glm::translate(glm::mat4(1.0f), cameraTranslation);
@@ -236,6 +249,10 @@ int main(void) {
         /* Poll for and process events */
         glfwPollEvents();
     }
+
+    delete currentTest;
+    if (currentTest != testMenu)
+        delete testMenu;
 
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
