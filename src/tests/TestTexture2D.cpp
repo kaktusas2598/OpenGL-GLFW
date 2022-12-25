@@ -139,9 +139,9 @@ namespace test {
         ImGui::SliderFloat("Scale", &scale, 0.0f, 5.0f);
         ImGui::SliderFloat("Rotation", &rotation, -180.0f, 180.0f);
         ImGui::Text("View Matrix");
-        ImGui::SliderFloat("Translation X", &cameraTranslation.x, 0.0f, screenWidth);
-        ImGui::SliderFloat("Translation Y", &cameraTranslation.y, 0.0f, screenHeight);
-        ImGui::SliderFloat("Translation Z", &cameraTranslation.z, -1.0f, 1.0f);
+        ImGui::SliderFloat("View Translation X", &cameraTranslation.x, 0.0f, screenWidth);
+        ImGui::SliderFloat("View Translation Y", &cameraTranslation.y, 0.0f, screenHeight);
+        ImGui::SliderFloat("View Translation Z", &cameraTranslation.z, -1.0f, 1.0f);
 
     }
 }
