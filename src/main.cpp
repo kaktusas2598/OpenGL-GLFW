@@ -17,6 +17,8 @@
 // For glm::to_string()
 #include "glm/gtx/string_cast.hpp"
 
+#include "tests/TestClearColor.hpp"
+
 int main(void) {
     GLFWwindow* window;
 
@@ -151,6 +153,8 @@ int main(void) {
     float scale = 0.5;
     float rotation = 90.0f;
 
+    test::TestClearColor test;
+
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window)) {
         ImGui_ImplOpenGL3_NewFrame();
@@ -159,6 +163,10 @@ int main(void) {
 
         glClearColor(clear_color.x * clear_color.w, clear_color.y * clear_color.w, clear_color.z * clear_color.w, clear_color.w);
         renderer.clear();
+
+        test.onUpdate(0.0f);
+        test.onRender();
+        test.onImGuiRender(); // Must be after new imgui frame
 
         // Creating view matrix, first param here is identity view matrix
         glm::mat4 view = glm::translate(glm::mat4(1.0f), cameraTranslation);
@@ -203,7 +211,7 @@ int main(void) {
 
             ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
 
-            ImGui::Text("Model Matrix", counter);
+            ImGui::Text("Model Matrix");
             ImGui::SliderFloat("Translation X", &translationA.x, 0.0f, screenWidth);
             ImGui::SliderFloat("Translation Y", &translationA.y, 0.0f, screenHeight);
             ImGui::SliderFloat("Translation Z", &translationA.z, -1.0f, 1.0f);
