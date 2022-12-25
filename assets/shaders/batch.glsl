@@ -15,7 +15,9 @@ uniform mat4 u_MVP;
 void main() {
     gl_Position = u_MVP * position;
     //gl_Position = position;
+    // Assing outgoing params for pipeline
     v_texCoord = texCoord;
+    v_color = color;
 }
 
 #shader fragment
@@ -30,7 +32,7 @@ uniform vec4 u_Color;
 uniform sampler2D u_texture;
 
 void main() {
-    vec4 texColor = texture(u_texture, v_texCoord);// * v_color; not sure why colour does not work here
+    vec4 texColor = texture(u_texture, v_texCoord) * v_color; //not sure why colour does not work here
     color = texColor;
     //color = u_Color;
     //color = vec4(1.0, 0.0, 0.0, 1.0);
