@@ -105,32 +105,17 @@ int main(void) {
                 currentTest = testMenu;
             }
             currentTest->onImGuiRender(); // Must be after new imgui frame
+
+            ImGui::Checkbox("Demo Window", &show_demo_window);
+            ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+            if(ImGui::Button("Close Application"))
+                glfwSetWindowShouldClose(window, 1);
+
             ImGui::End();
         }
 
-        //if (show_demo_window)
-            //ImGui::ShowDemoWindow(&show_demo_window);
-
-        //{
-            //ImGui::Begin("Settings");
-
-            //ImGui::Checkbox("Demo Window", &show_demo_window);
-
-            //ImGui::Text("Model Matrix");
-            //ImGui::SliderFloat("Translation X", &translationA.x, 0.0f, screenWidth);
-            //ImGui::SliderFloat("Translation Y", &translationA.y, 0.0f, screenHeight);
-            //ImGui::SliderFloat("Translation Z", &translationA.z, -1.0f, 1.0f);
-            //ImGui::SliderFloat("Scale", &scale, 0.0f, 5.0f);
-            //ImGui::SliderFloat("Rotation", &rotation, -180.0f, 180.0f);
-            //ImGui::Text("View Matrix");
-            //ImGui::SliderFloat("Translation X", &cameraTranslation.x, 0.0f, screenWidth);
-            //ImGui::SliderFloat("Translation Y", &cameraTranslation.y, 0.0f, screenHeight);
-            //ImGui::SliderFloat("Translation Z", &cameraTranslation.z, -1.0f, 1.0f);
-
-            //ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-            //ImGui::End();
-        //}
-
+        if (show_demo_window)
+            ImGui::ShowDemoWindow(&show_demo_window);
 
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
