@@ -23,6 +23,9 @@ namespace test {
         screenWidth = mode->width;
         screenHeight = mode->height;
 
+        // Enable depth testing
+        glEnable(GL_DEPTH_TEST);
+
         //free(monitor);
         //free(mode);
 
@@ -96,7 +99,7 @@ namespace test {
 
     void TestCube3D::onRender() {
         GLCall(glClearColor(0.0f, 0.0f, 0.0f, 1.0f));
-        GLCall(glClear(GL_COLOR_BUFFER_BIT));
+        GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
         texture->bind(); // bound to default slot 0
 
