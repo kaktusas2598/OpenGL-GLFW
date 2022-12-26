@@ -24,9 +24,9 @@ $(PCH_OUT): $(PCH_SRC) $(PCH_HEADERS)
 UNAME := $(shell uname -s)
 # For Mac
 ifeq ($(UNAME),Darwin)
-LDF+= -lGL -lGLU -lglut -lGLEW -lm ld# -lglu32
+LDF+= -lglfw3 -lGL -lGLU -lglut -lGLEW -lm -ld# -lglu32
 else ifeq ($(UNAME),Linux)
-LDF+= -lGL -lGLU -lglut -lGLEW -lm -lglu32
+LDF+= -lglfw -lGL -lGLU -lglut -lGLEW -lm
 else
 # For Windows using MSYS2/MING or Cygwin
 LDF+= -lmingw32 -mwindows -lglfw3 -lgdi32 -lglew32  -lopengl32 -lm

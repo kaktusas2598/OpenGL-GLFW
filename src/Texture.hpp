@@ -11,8 +11,8 @@ class Texture {
         void bind(unsigned int slot = 0) const;
         void unbind() const;
 
-        inline getWidth() const { return width; }
-        inline getHeight() const { return height; }
+        inline int getWidth() const { return width; }
+        inline int getHeight() const { return height; }
     private:
         unsigned int rendererID;
         std::string filePath;
