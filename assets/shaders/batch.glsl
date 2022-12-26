@@ -38,6 +38,7 @@ uniform sampler2D u_textures[2];
 
 void main() {
     int textureSlot = int(v_texIndex);
+    // Does not work on Linux: sampler array indexed with non const expressions are forbidden in GLSL 1.3 and later
     vec4 texColor = texture(u_textures[textureSlot], v_texCoord) * v_color; //not sure why colour does not work here
     color = texColor;
     //color = u_Color;
