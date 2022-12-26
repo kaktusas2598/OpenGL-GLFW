@@ -21,6 +21,8 @@ class Shader {
         void bind() const;
         void unbind() const;
 
+        unsigned int getRendererID() const { return rendererID; }
+
         // Set uniforms, TODO: use templates to have multiple types of uniforms
         // Should be using glm::vec4 here
         void setUniform1i(const std::string& name, float value);

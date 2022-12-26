@@ -14,7 +14,7 @@ namespace test {
 
     TestBatchRendering::TestBatchRendering()
         : translation(0, 0, 0),
-        cameraTranslation(0, 0, 0), scale(1.0), rotation(45.0f) {
+        cameraTranslation(0, 0, 0), cameraRotation(0, 0, 0) ,scale(1.0), rotation(45.0f) {
 
         // TODO: pass screen coords in instead of creating these raw pointers here
         // to get screen measurements
@@ -28,19 +28,20 @@ namespace test {
         //free(mode);
 
         // We render 2 quads using batch rendering - all vertices defined in vbo
-        // 1,2 - positions, 3,4 - tex coords, 5,6,7,8 - color
+        // 1,2,3 - positions, 3,4 - tex coords, 5,6,7,8 - color, 9 - texture slot id
         float vertices [] = {
-            0.1f, 0.1f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
-            0.6f, 0.1f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
-            0.6f, 0.4f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
-            1.0f, 0.4f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f,
+            0.1f, 0.1f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+            0.6f, 0.1f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
+            0.6f, 0.4f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f,
+            1.0f, 0.4f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
 
-            0.6f, 0.1f, 0.0f, 0.0f, 0.0f, 1.0f, 0.93f, 0.24f, 1.0f,
-            1.1f, 0.1f, 0.0f, 1.0f, 0.0f, 1.0f, 0.93f, 0.24f, 1.0f,
-            1.1f, 0.4f, 0.0f, 1.0f, 1.0f, 1.0f, 0.93f, 0.24f, 1.0f,
-            0.6f, 0.4f, 0.0f, 0.0f, 1.0f, 1.0f, 0.93f, 0.24f, 1.0f
+            0.6f, 0.1f, 0.0f, 0.0f, 0.0f, 1.0f, 0.93f, 0.24f, 1.0f, 1.0f,
+            1.1f, 0.1f, 0.0f, 1.0f, 0.0f, 1.0f, 0.93f, 0.24f, 1.0f, 1.0f,
+            1.1f, 0.4f, 0.0f, 1.0f, 1.0f, 1.0f, 0.93f, 0.24f, 1.0f, 1.0f,
+            0.6f, 0.4f, 0.0f, 0.0f, 1.0f, 1.0f, 0.93f, 0.24f, 1.0f, 1.0f
         };
 
+        // ortographic projection coords
         //float vertices [] = {
             //100.0f, 100.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
             //600.0, 100.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
@@ -73,12 +74,13 @@ namespace test {
         // also let's us specify different vertex layouts, default vao can be used with compability profile
         // core profile requires vao to be set
         vao = std::make_unique<VertexArray>();
-        vbo = std::make_unique<VertexBuffer>(vertices, 8 * 9 * sizeof(float));
+        vbo = std::make_unique<VertexBuffer>(vertices, 8 * 10 * sizeof(float));
 
         VertexBufferLayout layout;
         layout.push<float>(3); // position
         layout.push<float>(2); // texture coords
         layout.push<float>(4); // vertex color
+        layout.push<float>(1); // texture slot id
 
         vao->addBuffer(*vbo, layout);
 
@@ -89,9 +91,15 @@ namespace test {
         shader->bind();
         shader->setUniform4f("u_Color", 0.8f, 0.3f, 0.8f, 1.0f);
 
+        auto loc = glGetUniformLocation(shader->getRendererID(), "u_textures");
+        int samplers[2] = {0, 1};
+        glUniform1iv(loc, 2, samplers);
+
 
         texture = std::make_unique<Texture>("assets/textures/slime.png");
+        texture2 = std::make_unique<Texture>("assets/textures/mountains.png");
         texture->bind(); // bound to default slot 0
+        texture2->bind(1);
         // Set uniform to tell shader that we need to sample texture from slot 0
         shader->setUniform1i("u_Texture", 0);
 
@@ -108,12 +116,17 @@ namespace test {
         GLCall(glClear(GL_COLOR_BUFFER_BIT));
 
         texture->bind(); // bound to default slot 0
+        texture2->bind(1);
 
         //proj = glm::ortho(0.0f, (float)screenWidth, 0.0f, (float)screenHeight, -1.0f, 1.0f);
         proj = glm::perspective(glm::radians(rotation), (float)screenWidth/(float)screenHeight, 0.1f, 100.0f);
 
         // Creating view matrix, first param here is identity view matrix
         glm::mat4 view = glm::translate(glm::mat4(1.0f), cameraTranslation);
+        view = glm::rotate(view, glm::radians(cameraRotation.x), glm::vec3(1.0f, 0.0f, 0.0f));
+        view = glm::rotate(view, glm::radians(cameraRotation.y), glm::vec3(0.0f, 1.0f, 0.0f));
+        view = glm::rotate(view, glm::radians(cameraRotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
+        //view = glm::rotate();
         // Creating model matrix for transformations
         glm::mat4 model = glm::translate(glm::mat4(1.0f), translation);
         model = glm::scale(model, glm::vec3(scale, scale, scale));
@@ -140,6 +153,10 @@ namespace test {
         ImGui::SliderFloat("View Translation X", &cameraTranslation.x, -1.0f, 1.0f);
         ImGui::SliderFloat("View Translation Y", &cameraTranslation.y, -1.0f, 1.0f);
         ImGui::SliderFloat("View Translation Z", &cameraTranslation.z, -1.0f, 1.0f);
+        ImGui::SliderFloat("View Rotation X", &cameraRotation.x, 0.0f, 90.0f);
+        ImGui::SliderFloat("View Rotation Y", &cameraRotation.y, 0.0f, 90.0f);
+        ImGui::SliderFloat("View Rotation Z", &cameraRotation.z, 0.0f, 90.0f);
+
         ImGui::Text("Projection Matrix");
         ImGui::SliderFloat("Rotation", &rotation, -180.0f, 180.0f);
 
