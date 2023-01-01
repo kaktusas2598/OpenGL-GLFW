@@ -128,14 +128,12 @@ namespace test {
         int samplers[2] = {0, 1};
         glUniform1iv(loc, 2, samplers);
 
-
         texture = std::make_unique<Texture>("assets/textures/slime.png");
         texture2 = std::make_unique<Texture>("assets/textures/mountains.png");
         texture->bind(); // bound to default slot 0
         texture2->bind(1);
         // Set uniform to tell shader that we need to sample texture from slot 0
         shader->setUniform1i("u_Texture", 0);
-
     }
 
     TestDynamicBatchRendering::~TestDynamicBatchRendering() {
@@ -150,15 +148,9 @@ namespace test {
         for (int y = 0; y < 5; y++) {
             for (int x = 0; x < 5; x++) {
                 buffer = createQuad(buffer, x, y, 0.8f, 0.5f, 1.0f);
-                //break;
             }
         }
         buffer = createQuad(buffer, quad0x, quad0y, 0.5f, 0.5f, 0.0f);
-        //buffer = createQuad(buffer, 0.6f, 0.1f, 0.8f, 0.5f, 1.0f);
-        //Vertex vertices[8];
-
-        //memcpy(vertices, q0.data(), q0.size() * sizeof(Vertex));
-        //memcpy(vertices + q0.size(), q1.data(), q1.size() * sizeof(Vertex));
 
         vbo->bind();
         GLCall(glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(Vertex) * vertices.size(), vertices.data()));
