@@ -32,7 +32,6 @@ namespace test {
 
             std::unique_ptr<VertexArray> vao;
             std::unique_ptr<VertexBuffer> vbo;
-            //std::unique_ptr<VertexBufferLayout> layout;
             std::unique_ptr<IndexBuffer> ibo;
             std::unique_ptr<Shader> shader;
             std::unique_ptr<Texture> texture;
