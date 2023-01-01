@@ -82,6 +82,7 @@ int main(void) {
 
     Renderer renderer;
     bool show_demo_window = false;
+    bool wireframe_mode = false;
 
     test::Test* currentTest = nullptr;
     test::TestMenu* testMenu = new test::TestMenu(currentTest);
@@ -110,6 +111,11 @@ int main(void) {
             }
             currentTest->onImGuiRender(); // Must be after new imgui frame
 
+            if(wireframe_mode)
+                glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+            else
+                glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+            ImGui::Checkbox("Wireframe mode", &wireframe_mode);
             ImGui::Checkbox("Demo Window", &show_demo_window);
             ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
             if(ImGui::Button("Close Application"))
