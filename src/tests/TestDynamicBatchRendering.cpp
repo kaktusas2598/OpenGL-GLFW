@@ -35,32 +35,33 @@ namespace test {
         float texID; // GL Texture slot
     };
 
-    static std::array<Vertex, 4> createQuad(float x, float y, float w, float h, float textureID) {
-        Vertex v0;
-        v0.position = { x, y, 0.0f };
-        v0.texCoord = { 0.0f, 0.0f };
-        v0.color = { 1.0f, 0.0f, 0.0f, 1.0f };
-        v0.texID = textureID;
+    static Vertex* createQuad(Vertex* target, float x, float y, float w, float h, float textureID) {
 
-        Vertex v1;
-        v1.position = { x + w, y, 0.0f };
-        v1.texCoord = { 1.0f, 0.0f };
-        v1.color = { 0.0f, 1.0f, 0.0f, 1.0f };
-        v1.texID = textureID;
+        target->position = { x, y, 0.0f };
+        target->texCoord = { 0.0f, 0.0f };
+        target->color = { 1.0f, 0.0f, 0.0f, 1.0f };
+        target->texID = textureID;
+        target++;
 
-        Vertex v2;
-        v2.position = { x + w, y + h, 0.0f };
-        v2.texCoord = { 1.0f, 1.0f };
-        v2.color = { 0.0f, 0.0f, 1.0f, 1.0f };
-        v2.texID = textureID;
+        target->position = { x + w, y, 0.0f };
+        target->texCoord = { 1.0f, 0.0f };
+        target->color = { 0.0f, 1.0f, 0.0f, 1.0f };
+        target->texID = textureID;
+        target++;
 
-        Vertex v3;
-        v3.position = { x, y + h, 0.0f };
-        v3.texCoord = { 0.0f, 1.0f };
-        v3.color = { 0.3f, 0.3f, 0.3f, 1.0f };
-        v3.texID = textureID;
+        target->position = { x + w, y + h, 0.0f };
+        target->texCoord = { 1.0f, 1.0f };
+        target->color = { 0.0f, 0.0f, 1.0f, 1.0f };
+        target->texID = textureID;
+        target++;
 
-        return {v0, v1, v2, v3};
+        target->position = { x, y + h, 0.0f };
+        target->texCoord = { 0.0f, 1.0f };
+        target->color = { 0.3f, 0.3f, 0.3f, 1.0f };
+        target->texID = textureID;
+        target++;
+
+        return target;
     }
 
     const size_t MaxQuadCount = 1000;
@@ -69,7 +70,7 @@ namespace test {
 
     TestDynamicBatchRendering::TestDynamicBatchRendering()
         : translation(0, 0, 0),
-        cameraTranslation(0, 0, -1.0f), cameraRotation(0, 0, 0) ,scale(1.0), rotation(45.0f), quad0x(0.1f), quad0y(0.1f) {
+        cameraTranslation(0, 0, -1.0f), cameraRotation(0, 0, 0) ,scale(0.2), rotation(45.0f), quad0x(0.1f), quad0y(0.1f) {
 
         // TODO: pass screen coords in instead of creating these raw pointers here
         // to get screen measurements
@@ -82,7 +83,9 @@ namespace test {
         //free(monitor);
         //free(mode);
 
-        uint32_t indices[MaxIndexCount];
+        // TODO: if this is uint32_t, the cast in IndexBuffer constructor to
+        // const unsigned int pointer causes weird issues and big lag
+        unsigned int indices[MaxIndexCount];
         uint32_t offset = 0;
         // Set index buffer for quads only using 0, 1, 2, 2, 3, 0 pattern
         // This type of quad obviously won't work for stuff with triangles or polugons or whatever
@@ -98,7 +101,6 @@ namespace test {
 
             offset += 4;
         }
-
 
         // Using vertex array means we dont need to specify vertex attributes every time we draw
         // also let's us specify different vertex layouts, default vao can be used with compability profile
@@ -140,18 +142,26 @@ namespace test {
     }
 
     void TestDynamicBatchRendering::onUpdate(float deltaTime) {
+        std::array<Vertex, 1000> vertices;
+        Vertex* buffer = vertices.data();
         // Setting dynamic vertex buffer data
         // Creating couple of quads and copying them into vertices guffer which
         // then is passed to glBufferSubData
-        auto q0 = createQuad(quad0x, quad0y, 0.5f, 0.5f, 0.0f);
-        auto q1 = createQuad(0.6f, 0.1f, 0.8f, 0.5f, 1.0f);
-        Vertex vertices[8];
+        for (int y = 0; y < 5; y++) {
+            for (int x = 0; x < 5; x++) {
+                buffer = createQuad(buffer, x, y, 0.8f, 0.5f, 1.0f);
+                //break;
+            }
+        }
+        buffer = createQuad(buffer, quad0x, quad0y, 0.5f, 0.5f, 0.0f);
+        //buffer = createQuad(buffer, 0.6f, 0.1f, 0.8f, 0.5f, 1.0f);
+        //Vertex vertices[8];
 
-        memcpy(vertices, q0.data(), q0.size() * sizeof(Vertex));
-        memcpy(vertices + q0.size(), q1.data(), q1.size() * sizeof(Vertex));
+        //memcpy(vertices, q0.data(), q0.size() * sizeof(Vertex));
+        //memcpy(vertices + q0.size(), q1.data(), q1.size() * sizeof(Vertex));
 
         vbo->bind();
-        GLCall(glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices));
+        GLCall(glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(Vertex) * vertices.size(), vertices.data()));
     }
 
     void TestDynamicBatchRendering::onRender() {
