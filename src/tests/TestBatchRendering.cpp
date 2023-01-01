@@ -14,7 +14,7 @@ namespace test {
 
     TestBatchRendering::TestBatchRendering()
         : translation(0, 0, 0),
-        cameraTranslation(0, 0, 0), cameraRotation(0, 0, 0) ,scale(1.0), rotation(45.0f) {
+        cameraTranslation(0, 0, -1), cameraRotation(0, 0, 0) ,scale(1.0), rotation(45.0f) {
 
         // TODO: pass screen coords in instead of creating these raw pointers here
         // to get screen measurements
