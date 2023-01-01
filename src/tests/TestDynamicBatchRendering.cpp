@@ -63,6 +63,10 @@ namespace test {
         return {v0, v1, v2, v3};
     }
 
+    const size_t MaxQuadCount = 1000;
+    const size_t MaxVertexCount = MaxQuadCount * 4;
+    const size_t MaxIndexCount = MaxQuadCount * 6;
+
     TestDynamicBatchRendering::TestDynamicBatchRendering()
         : translation(0, 0, 0),
         cameraTranslation(0, 0, -1.0f), cameraRotation(0, 0, 0) ,scale(1.0), rotation(45.0f), quad0x(0.1f), quad0y(0.1f) {
@@ -78,27 +82,22 @@ namespace test {
         //free(monitor);
         //free(mode);
 
-        // ortographic projection coords
-        //float vertices [] = {
-            //100.0f, 100.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
-            //600.0, 100.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
-            //600.0f, 400.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
-            //100.0f, 400.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f,
+        uint32_t indices[MaxIndexCount];
+        uint32_t offset = 0;
+        // Set index buffer for quads only using 0, 1, 2, 2, 3, 0 pattern
+        // This type of quad obviously won't work for stuff with triangles or polugons or whatever
+        // this index buffer arrangement will not work for 3D models too
+        for (size_t i = 0; i < MaxIndexCount; i += 6) {
+            indices[i + 0] = 0 + offset;
+            indices[i + 1] = 1 + offset;
+            indices[i + 2] = 2 + offset;
 
-            //600.0f, 100.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.93f, 0.24f, 1.0f,
-            //1100.0, 100.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.93f, 0.24f, 1.0f,
-            //1100.0f, 400.0f, 0.0f, 1.0f, 1.0f, 1.0f, 0.93f, 0.24f, 1.0f,
-            //600.0f, 400.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.93f, 0.24f, 1.0f
-        //};
+            indices[i + 3] = 2 + offset;
+            indices[i + 4] = 3 + offset;
+            indices[i + 5] = 0 + offset;
 
-        // Index vertices to save memory, only need to define 4 vertices instead of 6 to draw square
-        unsigned int indices[] = {
-            0, 1, 2, // 1st triangle indices
-            2, 3, 0, // 2nd triangle indices
-
-            4, 5, 6,
-            6, 7, 4
-        };
+            offset += 4;
+        }
 
 
         // Using vertex array means we dont need to specify vertex attributes every time we draw
@@ -106,7 +105,7 @@ namespace test {
         // core profile requires vao to be set
         vao = std::make_unique<VertexArray>();
         // If we want to change vertex data dynamically, we set data to nullptr and use GL_DYNAMIC_DRAW
-        vbo = std::make_unique<VertexBuffer>(nullptr, 8 * 10 * sizeof(float), GL_DYNAMIC_DRAW);
+        vbo = std::make_unique<VertexBuffer>(nullptr, MaxVertexCount * sizeof(Vertex), GL_DYNAMIC_DRAW);
 
         VertexBufferLayout layout;
         layout.push<float>(3); // position
@@ -117,7 +116,7 @@ namespace test {
         vao->addBuffer(*vbo, layout);
 
         // Generate and bind index buffer object
-        ibo = std::make_unique<IndexBuffer>(indices, 12);
+        ibo = std::make_unique<IndexBuffer>(indices, MaxIndexCount);
 
         shader = std::make_unique<Shader>("assets/shaders/batch.glsl");
         shader->bind();
