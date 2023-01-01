@@ -1,6 +1,8 @@
 #ifndef __VertexBuffer__
 #define __VertexBuffer__
 
+#include <GL/glew.h>
+
 class VertexBuffer {
     public:
         VertexBuffer(const void* data, unsigned int size, GLenum usage = GL_STATIC_DRAW);
