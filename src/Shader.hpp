@@ -12,6 +12,7 @@ struct ShaderProgramSource {
 };
 
 
+// This is really Shader Program, as it loads and compiles both vertex and fragment shaders
 class Shader {
     public:
         Shader(const std::string& fileName);
