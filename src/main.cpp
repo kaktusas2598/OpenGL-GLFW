@@ -23,6 +23,12 @@
 #include "tests/TestDynamicBatchRendering.hpp"
 #include "tests/TestCube3D.hpp"
 
+void processInput(GLFWwindow* window) {
+    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
+        glfwSetWindowShouldClose(window, true);
+    }
+}
+
 int main(void) {
     GLFWwindow* window;
 
@@ -97,6 +103,8 @@ int main(void) {
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window)) {
+        processInput(window);
+
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
@@ -104,6 +112,7 @@ int main(void) {
         renderer.clear();
 
         if (currentTest) {
+            //currentTest->processInput(window); // TODO: implement
             currentTest->onUpdate(0.0f);
             currentTest->onRender();
             ImGui::Begin("Test");
