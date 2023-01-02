@@ -13,7 +13,7 @@
 namespace test {
 
     TestTexturedCube::TestTexturedCube()
-        : translation(0, 0, 0), cameraTranslation(0, 0, 0), scale(0.5), rotation(90.0f) {
+        : translation(0, 0, 0), cameraTranslation(0, 0, 0), scale(0.5), rotation(45.0f) {
 
         // TODO: pass screen coords in instead of creating these raw pointers here
         // to get screen measurements
@@ -114,7 +114,7 @@ namespace test {
         // First param - FOV could be changed for zooming effect
         // 2nd param - aspect ratio
         // 3rd and 4th params - near and far planes
-        proj = glm::perspective(glm::radians(45.0f), (float)screenWidth/(float)screenHeight, 0.1f, 100.0f);
+        proj = glm::perspective(glm::radians(rotation), (float)screenWidth/(float)screenHeight, 0.1f, 100.0f);
 
         shader = std::make_unique<Shader>("assets/shaders/cube_textured.glsl");
         shader->bind();
@@ -123,7 +123,6 @@ namespace test {
         texture->bind(); // bound to default slot 0
         // Set uniform to tell shader that we need to sample texture from slot 0
         shader->setUniform1i("u_Texture", 0);
-
     }
 
     TestTexturedCube::~TestTexturedCube() {
@@ -138,24 +137,41 @@ namespace test {
 
         texture->bind(); // bound to default slot 0
 
+        // Transformations for cube we will draw them using 10 draw calls too
+        glm::vec3 cubePositions[] = {
+            glm::vec3(0.0f, 0.0f, 0.0f),
+            glm::vec3(2.0f, 5.0f, -15.0f),
+            glm::vec3(-1.5f, 5.0f, -2.5f),
+            glm::vec3(-3.8, -2.2, -12.3),
+            glm::vec3(-2.4, -0.4f, -3.5f),
+            glm::vec3(-1.7f, 3.0f, -7.5f),
+            glm::vec3(1.3f, -2.0f, -2.5f),
+            glm::vec3(1.5f, 2.0f, -2.5f),
+            glm::vec3(1.5f, 0.2f, -1.5f),
+            glm::vec3(-1.3f, 1.0f, -1.5f)
+        };
+
         // Creating view matrix, first param here is identity view matrix
         glm::mat4 view = glm::translate(glm::mat4(1.0f), cameraTranslation);
-        // Creating model matrix for transformations
-        glm::mat4 model = glm::translate(glm::mat4(1.0f), translation);
-        model = glm::rotate(model, (float)glfwGetTime(), glm::vec3(0.5, 1.0, 0.0));
-        model = glm::scale(model, glm::vec3(scale, scale, scale));
 
-        // MVP gets multiplied in reverse order here, because OpenGL stores matrices in column order
-        // On Direct x this multiplication would be model * view * proj
-        glm::mat4 mvp = proj * view * model;
+        for (unsigned int i = 0; i < 10; i++) {
+            // Creating model matrix for transformations
+            glm::mat4 model = glm::translate(glm::mat4(1.0f), cubePositions[i]);
+            model = glm::rotate(model, (float)glfwGetTime(), glm::vec3(0.5, 1.0, 0.0));
+            model = glm::scale(model, glm::vec3(scale, scale, scale));
 
-        Renderer renderer;
+            // MVP gets multiplied in reverse order here, because OpenGL stores matrices in column order
+            // On Direct x this multiplication would be model * view * proj
+            glm::mat4 mvp = proj * view * model;
 
-        shader->bind();
-        shader->setUniform4f("u_Color", 1.0f, 0.3f, 0.8f, 1.0f);
-        shader->setUniformMat4f("u_MVP", mvp);
-        renderer.draw(*vao, *ibo, *shader);
-	}
+            Renderer renderer;
+
+            shader->bind();
+            shader->setUniform4f("u_Color", 1.0f, 0.3f, 0.8f, 1.0f);
+            shader->setUniformMat4f("u_MVP", mvp);
+            renderer.draw(*vao, *ibo, *shader);
+        }
+    }
 
     void TestTexturedCube::onImGuiRender() {
         ImGui::Text("Model Matrix");
@@ -168,6 +184,8 @@ namespace test {
         ImGui::SliderFloat("View Translation X", &cameraTranslation.x, -1.0f, 1.0f);
         ImGui::SliderFloat("View Translation Y", &cameraTranslation.y, -1.0f, 1.0f);
         ImGui::SliderFloat("View Translation Z", &cameraTranslation.z, -1.0f, 1.0f);
+        ImGui::Text("Projection Matrix");
+        ImGui::SliderFloat("Zoom (FOV)", &rotation, -180.0f, 180.0f);
 
     }
 }

@@ -1,6 +1,8 @@
 #ifndef __Test__
 #define __Test__
 
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
 #include <vector>
 #include <functional>
 #include <iostream>
@@ -13,6 +15,7 @@ namespace test {
             Test() {}
             virtual ~Test() {}
 
+            virtual void processInput(GLFWwindow* window) {}
             virtual void onUpdate(float deltaTime) {}
             virtual void onRender() {}
             virtual void onImGuiRender() {}

@@ -114,7 +114,7 @@ int main(void) {
         renderer.clear();
 
         if (currentTest) {
-            //currentTest->processInput(window); // TODO: implement
+            currentTest->processInput(window);
             currentTest->onUpdate(0.0f);
             currentTest->onRender();
             ImGui::Begin("Test");
