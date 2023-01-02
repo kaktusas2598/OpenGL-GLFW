@@ -131,9 +131,10 @@ namespace test {
         texture = std::make_unique<Texture>("assets/textures/slime.png");
         texture2 = std::make_unique<Texture>("assets/textures/mountains.png");
         texture->bind(); // bound to default slot 0
-        texture2->bind(1);
         // Set uniform to tell shader that we need to sample texture from slot 0
         shader->setUniform1i("u_Texture", 0);
+        texture2->bind(1);
+        shader->setUniform1i("u_Texture", 1);
     }
 
     TestDynamicBatchRendering::~TestDynamicBatchRendering() {
