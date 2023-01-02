@@ -153,9 +153,9 @@ namespace test {
         ImGui::SliderFloat("View Translation X", &cameraTranslation.x, -1.0f, 1.0f);
         ImGui::SliderFloat("View Translation Y", &cameraTranslation.y, -1.0f, 1.0f);
         ImGui::SliderFloat("View Translation Z", &cameraTranslation.z, -1.0f, 1.0f);
-        ImGui::SliderFloat("View Rotation X", &cameraRotation.x, 0.0f, 90.0f);
-        ImGui::SliderFloat("View Rotation Y", &cameraRotation.y, 0.0f, 90.0f);
-        ImGui::SliderFloat("View Rotation Z", &cameraRotation.z, 0.0f, 90.0f);
+        ImGui::SliderFloat("View Rotation X", &cameraRotation.x, -90.0f, 90.0f);
+        ImGui::SliderFloat("View Rotation Y", &cameraRotation.y, -90.0f, 90.0f);
+        ImGui::SliderFloat("View Rotation Z", &cameraRotation.z, -90.0f, 90.0f);
 
         ImGui::Text("Projection Matrix");
         ImGui::SliderFloat("Rotation", &rotation, -180.0f, 180.0f);

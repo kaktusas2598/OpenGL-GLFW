@@ -174,7 +174,9 @@ namespace test {
         view = glm::rotate(view, glm::radians(cameraRotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
         //view = glm::rotate();
         // Creating model matrix for transformations
+        // Remember actual transformation is applied in reverse! So model first rotates and then scales and translates
         glm::mat4 model = glm::translate(glm::mat4(1.0f), translation);
+        model = glm::rotate(model, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
         model = glm::scale(model, glm::vec3(scale, scale, scale));
 
         // MVP gets multiplied in reverse order here, because OpenGL stores matrices in column order
@@ -199,9 +201,9 @@ namespace test {
         ImGui::SliderFloat("View Translation X", &cameraTranslation.x, -1.0f, 1.0f);
         ImGui::SliderFloat("View Translation Y", &cameraTranslation.y, -1.0f, 1.0f);
         ImGui::SliderFloat("View Translation Z", &cameraTranslation.z, -1.0f, 1.0f);
-        ImGui::SliderFloat("View Rotation X", &cameraRotation.x, 0.0f, 90.0f);
-        ImGui::SliderFloat("View Rotation Y", &cameraRotation.y, 0.0f, 90.0f);
-        ImGui::SliderFloat("View Rotation Z", &cameraRotation.z, 0.0f, 90.0f);
+        ImGui::SliderFloat("View Rotation X", &cameraRotation.x, -90.0f, 90.0f);
+        ImGui::SliderFloat("View Rotation Y", &cameraRotation.y, -90.0f, 90.0f);
+        ImGui::SliderFloat("View Rotation Z", &cameraRotation.z, -90.0f, 90.0f);
 
         ImGui::Text("Projection Matrix");
         ImGui::SliderFloat("Rotation", &rotation, -180.0f, 180.0f);

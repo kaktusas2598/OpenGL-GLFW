@@ -29,13 +29,16 @@ namespace test {
         //free(monitor);
         //free(mode);
 
+        // So tet coords are useless here if using only 8 vertices, because tex coords
+        // cannot be duplicated per vertex, so we need here minimally 24 vertices, 4 per face and we can define
+        // texture for each face of cube then
         // 1st 2 floats position, 2nd two - tex coords
         float positions [] = {
             -0.5f, -0.5f, -2.0f, 1.0f, 0.0f, 0.0f, 1.0f, // 0
             -0.5f, 0.5f, -2.0f, 0.0f, 1.0f, 0.0f, 1.0f, // 1
             0.5f, 0.5f, -2.0f, 0.0f, 0.0f, 1.0f, 1.0f, // 2
             0.5f, -0.5f, -2.0f, 0.0f, 1.0f, 0.0f, 1.0f,// 3
-			-0.5f, -0.5f, -1.0f, 1.0f, 0.0f, 0.0f, 1.0f, // 4
+	    -0.5f, -0.5f, -1.0f, 1.0f, 0.0f, 0.0f, 1.0f, // 4
             -0.5f, 0.5f, -1.0f, 0.0f, 1.0f, 0.0f, 1.0f, // 5
             0.5f, 0.5f, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f, // 6
             0.5f, -0.5f, -1.0f, 0.0f, 1.0f, 0.0f, 1.0f // 7
@@ -79,7 +82,10 @@ namespace test {
         // Generate and bind index buffer object
         ibo = std::make_unique<IndexBuffer>(indices, 36);
 
-        proj = glm::perspective(glm::radians(rotation), (float)screenWidth/(float)screenHeight, 0.1f, 100.0f);
+        // First param - FOV could be changed for zooming effect
+        // 2nd param - aspect ratio
+        // 3rd and 4th params - near and far planes
+        proj = glm::perspective(glm::radians(45.0f), (float)screenWidth/(float)screenHeight, 0.1f, 100.0f);
 
         shader = std::make_unique<Shader>("assets/shaders/cube.glsl");
         shader->bind();
