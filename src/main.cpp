@@ -22,6 +22,7 @@
 #include "tests/TestBatchRendering.hpp"
 #include "tests/TestDynamicBatchRendering.hpp"
 #include "tests/TestCube3D.hpp"
+#include "tests/TestTexturedCube.hpp"
 
 void processInput(GLFWwindow* window) {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
@@ -100,6 +101,7 @@ int main(void) {
     testMenu->registerTest<test::TestBatchRendering>("Batch rendering");
     testMenu->registerTest<test::TestDynamicBatchRendering>("Batch rendering (dynamic)");
     testMenu->registerTest<test::TestCube3D>("3D Cube");
+    testMenu->registerTest<test::TestTexturedCube>("3D Cube (textured)");
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window)) {
