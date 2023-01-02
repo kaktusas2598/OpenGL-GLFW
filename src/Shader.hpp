@@ -14,6 +14,7 @@ struct ShaderProgramSource {
 
 class Shader {
     public:
+        // TODO: write another const to accpept 2 files or more to separate vertex and fragment shaders
         Shader(const std::string& fileName);
         ~Shader();
 
