@@ -7,11 +7,31 @@
 #include "Renderer.hpp"
 
 
-
-Shader::Shader(const std::string& fileName): filePath(fileName), rendererID(0) {
-    ShaderProgramSource shaderSource = parseShader(filePath);
+Shader::Shader(const std::string& fileName): rendererID(0) {
+    ShaderProgramSource shaderSource = parseShader(fileName);
     rendererID = createShader(shaderSource.VertexSource, shaderSource.FragmentSource);
 }
+
+Shader::Shader(const std::string& vertexFile, const std::string& fragmentFile): rendererID(0) {
+    std::ifstream vShaderFile;
+    std::ifstream fShaderFile;
+
+    vShaderFile.open(vertexFile);
+    fShaderFile.open(fragmentFile);
+
+    std::stringstream vShaderStream, fShaderStream;
+
+    vShaderStream << vShaderFile.rdbuf();
+    fShaderStream << fShaderFile.rdbuf();
+
+    vShaderFile.close();
+    fShaderFile.close();
+
+
+    ShaderProgramSource shaderSource = {vShaderStream.str(), fShaderStream.str()};
+    rendererID = createShader(shaderSource.VertexSource, shaderSource.FragmentSource);
+}
+
 
 Shader::~Shader() {
     GLCall(glDeleteProgram(rendererID));
