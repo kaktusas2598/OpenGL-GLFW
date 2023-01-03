@@ -28,6 +28,7 @@ namespace test {
 
 
     // Example struture of single vertex data for this example
+    // For allignment reasons, Vertex struct should always be size in multiples of 4
     struct Vertex {
         Vec3 position;
         Vec2 texCoord;
