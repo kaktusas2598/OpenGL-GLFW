@@ -8,6 +8,8 @@
 #include <iostream>
 #include <string>
 
+#include "../Camera.hpp"
+
 namespace test {
 
     class Test {
@@ -15,10 +17,13 @@ namespace test {
             Test() {}
             virtual ~Test() {}
 
-            virtual void processInput(GLFWwindow* window) {}
+            virtual void processInput(GLFWwindow* window, float deltaTime) {}
             virtual void onUpdate(float deltaTime) {}
             virtual void onRender() {}
             virtual void onImGuiRender() {}
+
+            void setCamera(Camera* cam) { camera = cam; }
+            Camera* camera;
     };
 
     class TestMenu : public Test {

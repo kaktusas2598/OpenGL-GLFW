@@ -12,6 +12,8 @@
 #include "VertexBufferLayout.hpp"
 #include "Texture.hpp"
 
+#include "Camera.hpp"
+
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 // For glm::to_string()
@@ -24,10 +26,21 @@
 #include "tests/TestCube3D.hpp"
 #include "tests/TestTexturedCube.hpp"
 #include "tests/TestCamera.hpp"
+#include "tests/TestCameraClass.hpp"
 
-void processInput(GLFWwindow* window) {
+void processInput(GLFWwindow* window, Camera* camera, float deltaTime) {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
         glfwSetWindowShouldClose(window, true);
+    }
+
+    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
+        camera->processKeyboard(CameraMovement::FORWARD, deltaTime);
+    } if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
+        camera->processKeyboard(CameraMovement::BACKWARD, deltaTime);
+    } if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
+        camera->processKeyboard(CameraMovement::LEFT, deltaTime);
+    } if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
+        camera->processKeyboard(CameraMovement::RIGHT, deltaTime);
     }
 }
 
@@ -88,7 +101,10 @@ int main(void) {
     GLCall(glEnable(GL_BLEND));
     GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 
+    Camera* camera = new Camera(glm::vec3(0.0f, 0.0f, 3.0f));
 
+    float deltaTime = 0.0f;
+    float lastFrame = 0.0f;
     Renderer renderer;
     bool show_demo_window = false;
     bool wireframe_mode = false;
@@ -100,14 +116,19 @@ int main(void) {
     testMenu->registerTest<test::TestClearColor>("Clear Color");
     testMenu->registerTest<test::TestTexture2D>("2D Textures");
     testMenu->registerTest<test::TestBatchRendering>("Batch rendering");
-    testMenu->registerTest<test::TestDynamicBatchRendering>("Batch rendering (dynamic)");
+    testMenu->registerTest<test::TestDynamicBatchRendering>("Batch rendering (dynamic geometry)");
     testMenu->registerTest<test::TestCube3D>("3D Cube");
     testMenu->registerTest<test::TestTexturedCube>("3D Cube (textured)");
     testMenu->registerTest<test::TestCamera>("Camera Example");
+    testMenu->registerTest<test::TestCameraClass>("Fly Like Camera Demo");
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window)) {
-        processInput(window);
+
+        float currentFrame = static_cast<float>(glfwGetTime());
+        deltaTime = currentFrame - lastFrame;
+        lastFrame = currentFrame;
+        processInput(window, camera, deltaTime);
 
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
@@ -116,8 +137,13 @@ int main(void) {
         renderer.clear();
 
         if (currentTest) {
-            currentTest->processInput(window);
-            currentTest->onUpdate(0.0f);
+            // Had to set camera on every frame to make it work, this is obviously horrible, but the
+            // purpose of this projec is to learn opengl and create different test scenarios,
+            // so for now I will let this slide
+            // Why does this break batch tests??? They aren't even using camera, WTF
+            currentTest->setCamera(camera);
+            currentTest->processInput(window, deltaTime);
+            currentTest->onUpdate(deltaTime);
             currentTest->onRender();
             ImGui::Begin("Test");
             if (currentTest != testMenu && ImGui::Button("<-")) {
@@ -151,6 +177,7 @@ int main(void) {
         glfwPollEvents();
     }
 
+    delete camera;
     delete currentTest;
     if (currentTest != testMenu)
         delete testMenu;
