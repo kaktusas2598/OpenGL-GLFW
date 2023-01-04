@@ -143,7 +143,7 @@ namespace test {
         // First param - FOV could be changed for zooming effect
         // 2nd param - aspect ratio
         // 3rd and 4th params - near and far planes
-        proj = glm::perspective(glm::radians(rotation), (float)screenWidth/(float)screenHeight, 0.1f, 100.0f);
+        proj = glm::perspective(glm::radians(camera->Zoom), (float)screenWidth/(float)screenHeight, 0.1f, 100.0f);
 
         glm::mat4 view = glm::mat4(1.0f);
         view = camera->getViewMatrix();
@@ -175,8 +175,6 @@ namespace test {
         ImGui::SliderFloat("View Translation X", &cameraTranslation.x, -1.0f, 1.0f);
         ImGui::SliderFloat("View Translation Y", &cameraTranslation.y, -1.0f, 1.0f);
         ImGui::SliderFloat("View Translation Z", &cameraTranslation.z, -1.0f, 1.0f);
-        ImGui::Text("Projection Matrix");
-        ImGui::SliderFloat("Zoom (FOV)", &rotation, -180.0f, 180.0f);
 
     }
 }
