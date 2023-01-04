@@ -27,6 +27,7 @@
 #include "tests/TestTexturedCube.hpp"
 #include "tests/TestCamera.hpp"
 #include "tests/TestCameraClass.hpp"
+#include "tests/TestLighting.hpp"
 
 float lastX, lastY;
 bool firstMouse;
@@ -159,6 +160,7 @@ int main(void) {
     testMenu->registerTest<test::TestTexturedCube>("3D Cube (textured)");
     testMenu->registerTest<test::TestCamera>("Camera Example");
     testMenu->registerTest<test::TestCameraClass>("Fly Like Camera Demo");
+    testMenu->registerTest<test::TestLighting>("Basic Lighting");
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window)) {
