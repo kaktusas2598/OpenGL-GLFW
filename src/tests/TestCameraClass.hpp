@@ -17,7 +17,6 @@ namespace test {
             TestCameraClass();
             ~TestCameraClass();
 
-            void processInput(GLFWwindow* window, float deltaTime) override;
             void onUpdate(float deltaTime) override;
             void onRender() override;
             void onImGuiRender() override;
@@ -36,9 +35,6 @@ namespace test {
 
             glm::mat4 proj;
             int screenWidth, screenHeight;
-
-            float lastX, lastY;
-            bool firstMouse;
     };
 }
 #endif // __TestCameraClass__

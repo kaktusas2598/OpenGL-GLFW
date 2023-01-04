@@ -35,12 +35,35 @@ void Camera::processKeyboard(CameraMovement direction, float deltaTime) {
 }
 
 void Camera::processMouseMovement(float xOffset, float yOffset, bool constrainPitch) {
+    xOffset *= MouseSensitivity;
+    yOffset *= MouseSensitivity;
+
+    Yaw += xOffset;
+    Pitch += yOffset;
+
+    // Prevent camera from flipping
+    if (constrainPitch) {
+        if (Pitch > 89.0f)
+            Pitch = 89.0f;
+        if (Pitch < -89.0f)
+            Pitch = -89.0f;
+    }
+
+    updateCameraVectors();
 }
 
 void Camera::processMouseScroll(float yOffset) {
+    // TODO: implement
 }
 
 void Camera::updateCameraVectors() {
+    // Calculate new front vector using euler angles
+    glm::vec3 front;
+    front.x = cos(glm::radians(Yaw)) * cos(glm::radians(Pitch));
+    front.y = sin(glm::radians(Pitch));
+    front.z = sin(glm::radians(Yaw)) * cos(glm::radians(Pitch));
+    Front = glm::normalize(front);
+
     Right = glm::normalize(glm::cross(Front, WorldUp));
     Up = glm::normalize(glm::cross(Right, Front));
 }

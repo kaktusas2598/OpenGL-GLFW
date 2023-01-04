@@ -28,6 +28,32 @@
 #include "tests/TestCamera.hpp"
 #include "tests/TestCameraClass.hpp"
 
+float lastX, lastY;
+bool firstMouse;
+Camera* camera = nullptr;
+
+void mouseCallback(GLFWwindow* window, double xPos, double yPos) {
+    // To prevent sudden camera jamp when mouse callback first gets called upon entering screen
+    if (firstMouse) {
+        lastX = xPos;
+        lastY = yPos;
+        firstMouse = false;
+    }
+
+    float xOffset = xPos - lastX;
+    float yOffset = lastY - yPos; // Reversed because Y axis goes from bottom to top in opengl
+
+    lastX = xPos;
+    lastY = yPos;
+    if (camera != nullptr)
+        camera->processMouseMovement(xOffset, yOffset);
+}
+
+void scrollCallback(GLFWwindow* window, double xOffset, double yOffset) {
+    if (camera != nullptr)
+        camera->processMouseScroll(yOffset);
+}
+
 void processInput(GLFWwindow* window, Camera* camera, float deltaTime) {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
         glfwSetWindowShouldClose(window, true);
@@ -77,6 +103,18 @@ int main(void) {
     /* Make the window's context current */
     glfwMakeContextCurrent(window);
 
+    // Set callbacks
+    glfwSetCursorPosCallback(window, mouseCallback);
+    glfwSetScrollCallback(window, scrollCallback);
+
+    // For camera
+    lastX = screenWidth / 2.0f;
+    lastY = screenHeight / 2.0f;
+    firstMouse = true;
+
+    // Hide cursor for 3D camera
+    //glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
     glfwSwapInterval(1); // Enable vsync
 
     if (glewInit() != GLEW_OK) {
@@ -101,7 +139,7 @@ int main(void) {
     GLCall(glEnable(GL_BLEND));
     GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 
-    Camera* camera = new Camera(glm::vec3(0.0f, 0.0f, 3.0f));
+    camera = new Camera(glm::vec3(0.0f, 0.0f, 3.0f));
 
     float deltaTime = 0.0f;
     float lastFrame = 0.0f;

@@ -20,11 +20,6 @@ const float ZOOM = 45.0f;
 
 class Camera {
     public:
-        Camera* Instance() {
-            if (s_pInstance == nullptr) {
-                //s_pInstance = new Camera()
-            }
-        }
         // Camera Attributes
         glm::vec3 Position;
         glm::vec3 Front;
@@ -45,14 +40,12 @@ class Camera {
         glm::mat4 getViewMatrix();
 
         void processKeyboard(CameraMovement direction, float deltaTime);
-        void processMouseMovement(float xOffset, float yOffset, bool constrainPitch = false);
+        void processMouseMovement(float xOffset, float yOffset, bool constrainPitch = true);
         void processMouseScroll(float yOffset);
     private:
 
         // Using Euler Angles
         void updateCameraVectors();
-
-        static Camera* s_pInstance;
 };
 
 #endif // __Camera__

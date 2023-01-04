@@ -14,10 +14,6 @@
 
 namespace test {
 
-    static void mouseCallback(GLFWwindow* window, double xpos, double ypos) {
-        std::cout << "Mouse X: " << xpos << ", Mouse Y: " << ypos << "\n";
-    }
-
     TestCameraClass::TestCameraClass()
         : translation(0, 0, 0), cameraTranslation(0, 0, 0), scale(0.5), rotation(45.0f) {
 
@@ -28,10 +24,6 @@ namespace test {
 
         screenWidth = mode->width;
         screenHeight = mode->height;
-
-        lastX = screenWidth / 2.0f;
-        lastY = screenHeight / 2.0f;
-        firstMouse = true;
 
         // Enable depth testing
         glEnable(GL_DEPTH_TEST);
@@ -99,17 +91,8 @@ namespace test {
             22, 23, 20
         };
 
-        // OpenGL is a State machine, so things need to be done in certain order, so usually
-        // you create vertex array, then vertex buffer
-        // then you specify vertex layout/attrivutes, bind buffer
-        // after that you generate index buffer to remove number of indices
-        //
-        // and finally define, compile and link shaders?
-
-        // Using vertex array means we dont need to specify vertex attributes every time we draw
-        // also let's us specify different vertex layouts, default vao can be used with compability profile
-        // core profile requires vao to be set
         vao = std::make_unique<VertexArray>();
+        // 24 vertices with 5 attributes each: 3 position and 2 UV
         vbo = std::make_unique<VertexBuffer>(positions, 24 * 5 * sizeof(float));
 
         VertexBufferLayout layout;
@@ -132,17 +115,6 @@ namespace test {
     }
 
     TestCameraClass::~TestCameraClass() {
-    }
-
-    void TestCameraClass::processInput(GLFWwindow* window, float deltaTime) {
-        //if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-            //camera->processKeyboard(CameraMovement::FORWARD, deltaTime);
-        //if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-            //camera->processKeyboard(CameraMovement::BACKWARD, deltaTime);
-        //if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-            //camera->processKeyboard(CameraMovement::LEFT, deltaTime);
-        //if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-            //camera->processKeyboard(CameraMovement::RIGHT, deltaTime);
     }
 
     void TestCameraClass::onUpdate(float deltaTime) {
@@ -180,7 +152,7 @@ namespace test {
         for (unsigned int i = 0; i < 10; i++) {
             // Creating model matrix for transformations
             glm::mat4 model = glm::translate(glm::mat4(1.0f), cubePositions[i]);
-            model = glm::rotate(model, (float)glfwGetTime(), glm::vec3(0.5, 1.0, 0.0));
+            //model = glm::rotate(model, (float)glfwGetTime(), glm::vec3(0.5, 1.0, 0.0));
             model = glm::scale(model, glm::vec3(scale, scale, scale));
 
             // MVP gets multiplied in reverse order here, because OpenGL stores matrices in column order
