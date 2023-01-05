@@ -60,6 +60,18 @@ void processInput(GLFWwindow* window, Camera* camera, float deltaTime) {
         glfwSetWindowShouldClose(window, true);
     }
 
+    // Camera up and down, same controls as in minecraft creative
+    if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
+        if (camera != nullptr)
+            camera->Position.y += 2.5f * deltaTime;
+    }
+
+    if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
+        if (camera != nullptr)
+            camera->Position.y -= 2.5f * deltaTime;
+    }
+
+
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
         camera->processKeyboard(CameraMovement::FORWARD, deltaTime);
     } if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
@@ -68,6 +80,21 @@ void processInput(GLFWwindow* window, Camera* camera, float deltaTime) {
         camera->processKeyboard(CameraMovement::LEFT, deltaTime);
     } if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
         camera->processKeyboard(CameraMovement::RIGHT, deltaTime);
+    }
+
+    // Disable and enable cursor for fps experience
+    if (glfwGetKey(window, GLFW_KEY_C) == GLFW_PRESS) {
+        switch (glfwGetInputMode(window, GLFW_CURSOR)) {
+            case GLFW_CURSOR_NORMAL:
+                //Hide cursor for 3D camera
+                glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+                break;
+            case GLFW_CURSOR_DISABLED:
+                glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+                break;
+            default:
+                break;
+        }
     }
 }
 
@@ -112,9 +139,6 @@ int main(void) {
     lastX = screenWidth / 2.0f;
     lastY = screenHeight / 2.0f;
     firstMouse = true;
-
-    // Hide cursor for 3D camera
-    //glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
     glfwSwapInterval(1); // Enable vsync
 

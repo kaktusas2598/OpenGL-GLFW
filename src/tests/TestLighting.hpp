@@ -30,6 +30,8 @@ namespace test {
 
             glm::mat4 proj;
             int screenWidth, screenHeight;
+
+            glm::vec3 lightPosition;
     };
 }
 #endif // __TestLighting__

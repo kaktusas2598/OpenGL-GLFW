@@ -29,43 +29,43 @@ namespace test {
         //free(monitor);
         //free(mode);
 
-        // x, y, z, tex.s, tex.t
+        // position, normal
         float positions [] = {
             // FRONT
-            -0.5f, -0.5f, -1.0f, 1.0f, 1.0f, // 0
-            -0.5f, 0.5f, -1.0f,  0.0f, 1.0f, // 1
-            0.5f, 0.5f, -1.0f,   0.0f, 0.0f, // 2
-            0.5f, -0.5f, -1.0f,  1.0f, 0.0f, // 3
+            -0.5f, -0.5f, -1.0f,  0.0f, 0.0f, 1.0f, //1.0f, 1.0f, // 0
+            -0.5f, 0.5f, -1.0f,  0.0f, 0.0f, 1.0f, // 0.0f, 1.0f, // 1
+            0.5f, 0.5f, -1.0f,   0.0f, 0.0f, 1.0f, // 0.0f, 0.0f, // 2
+            0.5f, -0.5f, -1.0f,   0.0f, 0.0f, 1.0f, //1.0f, 0.0f, // 3
 
             // BACK
-            -0.5f, -0.5f, -2.0f, 1.0f, 1.0f, // 4
-            -0.5f, 0.5f, -2.0f,  0.0f, 1.0f, // 5
-            0.5f, 0.5f, -2.0f,   0.0f, 0.0f, // 6
-            0.5f, -0.5f, -2.0f,  1.0f, 0.0f, // 7
+            -0.5f, -0.5f, -2.0f,  0.0f, 0.0f, -1.0f, //1.0f, 1.0f, // 4
+            -0.5f, 0.5f, -2.0f,   0.0f, 0.0f, -1.0f, //0.0f, 1.0f, // 5
+            0.5f, 0.5f, -2.0f,    0.0f, 0.0f, -1.0f, //0.0f, 0.0f, // 6
+            0.5f, -0.5f, -2.0f,   0.0f, 0.0f, -1.0f, //1.0f, 0.0f, // 7
 
             // UP
-            0.5f, 0.5f, -2.0f, 1.0f, 1.0f,
-            -0.5f, 0.5f, -2.0f, 0.0f, 1.0f,
-            -0.5f, 0.5f, -1.0f, 0.0f, 0.0f,
-            0.5f, 0.5f, -1.0f, 1.0f, 0.0f,
+            0.5f, 0.5f, -2.0f,  0.0f, 1.0f, 0.0f, //1.0f, 1.0f,
+            -0.5f, 0.5f, -2.0f,  0.0f, 1.0f, 0.0f, //0.0f, 1.0f,
+            -0.5f, 0.5f, -1.0f,  0.0f, 1.0f, 0.0f, //0.0f, 0.0f,
+            0.5f, 0.5f, -1.0f,  0.0f, 1.0f, 0.0f, //1.0f, 0.0f,
 
             // DOWN
-            0.5f, -0.5f, -1.0f, 1.0f, 1.0f,
-            -0.5f, -0.5f, -1.0f, 0.0f, 1.0f,
-            -0.5f, -0.5f, -2.0f, 0.0f, 0.0f,
-            0.5f, -0.5f, -2.0f, 1.0f, 0.0f,
+            0.5f, -0.5f, -1.0f,  0.0f, -1.0f, 0.0f, //1.0f, 1.0f,
+            -0.5f, -0.5f, -1.0f,  0.0f, -1.0f, 0.0f, //0.0f, 1.0f,
+            -0.5f, -0.5f, -2.0f,  0.0f, -1.0f, 0.0f, //0.0f, 0.0f,
+            0.5f, -0.5f, -2.0f,  0.0f, -1.0f, 0.0f, //1.0f, 0.0f,
 
             // LEFT
-            -0.5f, 0.5f, -1.0f, 1.0f, 1.0f,
-            -0.5f, 0.5f, -2.0f, 0.0f, 1.0f,
-            -0.5f, -0.5f, -2.0f, 0.0f, 0.0f,
-            -0.5f, -0.5f, -1.0f, 1.0f, 0.0f,
+            -0.5f, 0.5f, -1.0f,  -1.0f, 0.0f, 0.0f, //1.0f, 1.0f,
+            -0.5f, 0.5f, -2.0f,  -1.0f, 0.0f, 0.0f, //0.0f, 1.0f,
+            -0.5f, -0.5f, -2.0f, -1.0f, 0.0f, 0.0f, //0.0f, 0.0f,
+            -0.5f, -0.5f, -1.0f, -1.0f, 0.0f, 0.0f, //1.0f, 0.0f,
 
             // RIGHT
-            0.5f, 0.5f, -2.0f, 1.0f, 1.0f,
-            0.5f, 0.5f, -1.0f, 0.0f, 1.0f,
-            0.5f, -0.5f, -1.0f, 0.0f, 0.0f,
-            0.5f, -0.5f, -2.0f, 1.0f, 0.0f,
+            0.5f, 0.5f, -2.0f,  1.0f, 0.0f, 0.0f, //1.0f, 1.0f,
+            0.5f, 0.5f, -1.0f,  1.0f, 0.0f, 0.0f, //0.0f, 1.0f,
+            0.5f, -0.5f, -1.0f, 1.0f, 0.0f, 0.0f, //0.0f, 0.0f,
+            0.5f, -0.5f, -2.0f, 1.0f, 0.0f, 0.0f, //1.0f, 0.0f,
         };
 
         unsigned int indices[] = {
@@ -90,12 +90,12 @@ namespace test {
         };
 
         vao = std::make_unique<VertexArray>();
-        // 24 vertices with 5 attributes each: 3 position and 2 UV
-        vbo = std::make_unique<VertexBuffer>(positions, 24 * 5 * sizeof(float));
+        // 24 vertices with 5 attributes each: 3 position and 3 normal
+        vbo = std::make_unique<VertexBuffer>(positions, 24 * 6 * sizeof(float));
 
         VertexBufferLayout layout;
         layout.push<float>(3); // position
-        layout.push<float>(2); // texture coords
+        layout.push<float>(3); // normals
 
         vao->addBuffer(*vbo, layout);
 
@@ -112,6 +112,8 @@ namespace test {
         lightingShader->setUniform1i("u_Texture", 0);
 
         lightSourceShader = std::make_unique<Shader>("assets/shaders/lightSource.glsl");
+
+        lightPosition = glm::vec3(1.0f, 2.0f, -5.0f);
     }
 
     TestLighting::~TestLighting() {
@@ -125,9 +127,6 @@ namespace test {
 
         texture->bind(); // bound to default slot 0
 
-        // TODO: render light source, needs to have color
-        // can use same mesh info as object, but then what about color, set in shader?
-        // to displace this light source can use different model matrix?
 
         // First param - FOV could be changed for zooming effect
         // 2nd param - aspect ratio
@@ -141,31 +140,37 @@ namespace test {
         //glm::mat4 model = glm::translate(glm::mat4(1.0f), cubePositions[i]);
         glm::mat4 model = glm::mat4(1.0f);
         //model = glm::rotate(model, (float)glfwGetTime(), glm::vec3(0.5, 1.0, 0.0));
+        // If we applied a non-uniform scale here, it would change direction for normals and
+        // thus would distorn lighting, to solve that we could use different model matrix
+        // for lighting called - normal matrix
         model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
-
-        // MVP gets multiplied in reverse order here, because OpenGL stores matrices in column order
-        // On Direct x this multiplication would be model * view * proj
-        glm::mat4 mvp = proj * view * model;
 
         Renderer renderer;
 
         lightingShader->bind();
         lightingShader->setUniform3f("objectColor", 1.0f, 0.5f, 0.31f);
         lightingShader->setUniform3f("lightColor", 1.0f, 1.0f, 1.0f);
-        lightingShader->setUniformMat4f("u_MVP", mvp);
+        lightingShader->setUniform3f("lightPosition", lightPosition.x, lightPosition.y, lightPosition.z);
+        lightingShader->setUniformMat4f("projection", proj);
+        lightingShader->setUniformMat4f("view", view);
+        lightingShader->setUniformMat4f("model", model);
         renderer.draw(*vao, *ibo, *lightingShader);
 
         // Translate same cube and use light source shader to produce light source cube
         lightSourceShader->bind();
-        model = glm::translate(model, glm::vec3(1.0f, 2.0f, -5.0f));
+        model = glm::translate(model, lightPosition);
         model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
 
-        mvp = proj * view * model;
+        glm::mat4 mvp = proj * view * model;
         lightSourceShader->setUniformMat4f("u_MVP", mvp);
         renderer.draw(*vao, *ibo, *lightSourceShader);
     }
 
     void TestLighting::onImGuiRender() {
+        ImGui::Text("Light Position");
+        ImGui::SliderFloat("X", &lightPosition.x, -10.0f, 10.0f);
+        ImGui::SliderFloat("Y", &lightPosition.y, -10.0f, 10.0f);
+        ImGui::SliderFloat("Z", &lightPosition.z, -10.0f, 10.0f);
     }
 }
 
