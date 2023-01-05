@@ -151,6 +151,7 @@ namespace test {
         lightingShader->setUniform3f("objectColor", 1.0f, 0.5f, 0.31f);
         lightingShader->setUniform3f("lightColor", 1.0f, 1.0f, 1.0f);
         lightingShader->setUniform3f("lightPosition", lightPosition.x, lightPosition.y, lightPosition.z);
+        lightingShader->setUniform3f("viewPosition", camera->Position.x, camera->Position.y, camera->Position.z);
         lightingShader->setUniformMat4f("projection", proj);
         lightingShader->setUniformMat4f("view", view);
         lightingShader->setUniformMat4f("model", model);
