@@ -19,7 +19,6 @@
 // For glm::to_string()
 #include "glm/gtx/string_cast.hpp"
 
-#include "tests/TestClearColor.hpp"
 #include "tests/TestTexture2D.hpp"
 #include "tests/TestBatchRendering.hpp"
 #include "tests/TestDynamicBatchRendering.hpp"
@@ -28,6 +27,7 @@
 #include "tests/TestCamera.hpp"
 #include "tests/TestCameraClass.hpp"
 #include "tests/TestLighting.hpp"
+#include "tests/TestMaterials.hpp"
 
 float lastX, lastY;
 bool firstMouse;
@@ -110,18 +110,24 @@ int main(void) {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    GLFWmonitor* monitor = glfwGetPrimaryMonitor();
-    const GLFWvidmode* mode = glfwGetVideoMode(monitor);
+    // Defaults
+    int screenWidth = 1920;
+    int screenHeight = 1080;
 
-    glfwWindowHint(GLFW_RED_BITS, mode->redBits);
+    GLFWmonitor* monitor = nullptr;
+
+    // Block below is responsible for setting up fullscreen
+    monitor = glfwGetPrimaryMonitor();
+    const GLFWvidmode* mode = glfwGetVideoMode(monitor);
     glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
     glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
     glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
-    const int screenWidth = mode->width;
-    const int screenHeight = mode->height;
+    screenWidth = mode->width;
+    screenHeight = mode->height;
 
-    /* Create a windowed mode window and its OpenGL context */
-    window = glfwCreateWindow(mode->width, mode->height, "OpenGL test", monitor, NULL);
+    // Monitor will be nullptr for non-fullscreen
+    window = glfwCreateWindow(screenWidth, screenHeight, "OpenGL test", monitor, NULL);
+
     if (!window)
     {
         glfwTerminate();
@@ -171,12 +177,12 @@ int main(void) {
     Renderer renderer;
     bool show_demo_window = false;
     bool wireframe_mode = false;
+    float clearColor[4];
 
     test::Test* currentTest = nullptr;
     test::TestMenu* testMenu = new test::TestMenu(currentTest);
     currentTest = testMenu;
 
-    testMenu->registerTest<test::TestClearColor>("Clear Color");
     testMenu->registerTest<test::TestTexture2D>("2D Textures");
     testMenu->registerTest<test::TestBatchRendering>("Batch rendering");
     testMenu->registerTest<test::TestDynamicBatchRendering>("Batch rendering (dynamic geometry)");
@@ -184,7 +190,8 @@ int main(void) {
     testMenu->registerTest<test::TestTexturedCube>("3D Cube (textured)");
     testMenu->registerTest<test::TestCamera>("Camera Example");
     testMenu->registerTest<test::TestCameraClass>("Fly Like Camera Demo");
-    testMenu->registerTest<test::TestLighting>("Basic Lighting");
+    testMenu->registerTest<test::TestLighting>("Basic Phong Lighting");
+    testMenu->registerTest<test::TestMaterials>("Materials Demo");
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window)) {
@@ -198,6 +205,7 @@ int main(void) {
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
+        GLCall(glClearColor(clearColor[0], clearColor[1], clearColor[2], clearColor[3]));
         renderer.clear();
 
         if (currentTest) {
@@ -220,6 +228,7 @@ int main(void) {
                 glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
             else
                 glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+            ImGui::ColorEdit4("Clear color", clearColor);
             ImGui::Checkbox("Wireframe mode", &wireframe_mode);
             ImGui::Checkbox("Demo Window", &show_demo_window);
             ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
