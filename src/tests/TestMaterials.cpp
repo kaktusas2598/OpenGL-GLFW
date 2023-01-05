@@ -147,17 +147,32 @@ namespace test {
 
         Renderer renderer;
 
+        // Light color variation over time
+        glm::vec3 lightColor;
+        lightColor.x = sin(glfwGetTime() * 2.0f);
+        lightColor.y = sin(glfwGetTime() * 0.7f);
+        lightColor.z = sin(glfwGetTime() * 1.3f);
+
+        glm::vec3 diffuseColor = lightColor * glm::vec3(0.5f);
+        glm::vec3 ambientColor = lightColor * glm::vec3(0.2f);
+
         lightingShader->bind();
         lightingShader->setUniform3f("material.ambient", 1.0f, 0.5f, 0.31f);
         lightingShader->setUniform3f("material.diffuse", 1.0f, 0.5f, 0.31f);
         lightingShader->setUniform3f("material.specular", 0.5f, 0.5f, 0.5f);
         lightingShader->setUniform1f("material.shininess", 32.0f);
-        lightingShader->setUniform3f("lightColor", 1.0f, 1.0f, 1.0f);
-        lightingShader->setUniform3f("lightPosition", lightPosition.x, lightPosition.y, lightPosition.z);
+
+        lightingShader->setUniform3f("light.ambient", ambientColor.x, ambientColor.y, ambientColor.z);
+        lightingShader->setUniform3f("light.diffuse", diffuseColor.x, diffuseColor.y, diffuseColor.z);
+        lightingShader->setUniform3f("light.specular", 1.0f, 1.0f, 1.0f);
+        lightingShader->setUniform3f("light.position", lightPosition.x, lightPosition.y, lightPosition.z);
+
         lightingShader->setUniform3f("viewPosition", camera->Position.x, camera->Position.y, camera->Position.z);
+
         lightingShader->setUniformMat4f("projection", proj);
         lightingShader->setUniformMat4f("view", view);
         lightingShader->setUniformMat4f("model", model);
+
         renderer.draw(*vao, *ibo, *lightingShader);
 
         // Translate same cube and use light source shader to produce light source cube

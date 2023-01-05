@@ -31,32 +31,40 @@ struct Material {
     float shininess;
 };
 
+struct Light {
+    vec3 position;
+
+    vec3 ambient;
+    vec3 diffuse;
+    vec3 specular;
+};
+
+
 layout(location = 0) out vec4 color;
 
 in vec3 v_normal;
 in vec3 v_fragPos;
 
 uniform Material material;
-uniform vec3 lightColor;
-uniform vec3 lightPosition;
+uniform Light light;
 // Alternatively we can calculate lighting in view space, this uniform becaumes 0,0,0 always and is not needed
 // but we need to convert all relevant vectors, view matrix and normal matrix if used
 uniform vec3 viewPosition;
 
 void main() {
-    vec3 ambient = lightColor * material.ambient;
+    vec3 ambient = light.ambient * material.ambient;
 
     // diffuse light
     vec3 norm = normalize(v_normal);
-    vec3 lightDirection = normalize(lightPosition - v_fragPos);
+    vec3 lightDirection = normalize(light.position - v_fragPos);
     float diff = max(dot(norm, lightDirection), 0.0);
-    vec3 diffuse = lightColor * (diff * material.diffuse);
+    vec3 diffuse = light.diffuse * (diff * material.diffuse);
 
     // specular light
     vec3 viewDirection = normalize(viewPosition - v_fragPos);
     vec3 reflectDirection = reflect(-lightDirection, norm);
     float spec = pow(max(dot(viewDirection, reflectDirection), 0.0), material.shininess);
-    vec3 specular = lightColor * (spec * material.specular);
+    vec3 specular = light.specular * (spec * material.specular);
 
     vec3 finalColor = ambient + diffuse + specular;
 
