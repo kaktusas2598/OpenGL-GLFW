@@ -28,6 +28,7 @@
 #include "tests/TestCameraClass.hpp"
 #include "tests/TestLighting.hpp"
 #include "tests/TestMaterials.hpp"
+#include "tests/TestDiffuseSpecularMaps.hpp"
 
 float lastX, lastY;
 bool firstMouse;
@@ -192,6 +193,7 @@ int main(void) {
     testMenu->registerTest<test::TestCameraClass>("Fly Like Camera Demo");
     testMenu->registerTest<test::TestLighting>("Basic Phong Lighting");
     testMenu->registerTest<test::TestMaterials>("Materials Demo");
+    testMenu->registerTest<test::TestDiffuseSpecularMaps>("Diffuse and Specular light mapping");
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window)) {
