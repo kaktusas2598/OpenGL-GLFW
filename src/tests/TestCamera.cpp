@@ -133,14 +133,14 @@ namespace test {
 
         texture->bind(); // bound to default slot 0
 
-        glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
+        //glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
         glm::vec3 cameraTarget = glm::vec3(0.0f, 0.0f, 0.0f);
-        glm::vec3 cameraDirection = glm::normalize(cameraPos - cameraTarget); // This vector actually points in the opposite direction
+        //glm::vec3 cameraDirection = glm::normalize(cameraPos - cameraTarget); // This vector actually points in the opposite direction
 
         glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
-        glm::vec3 cameraRight = glm::normalize(glm::cross(up, cameraDirection));
+        //glm::vec3 cameraRight = glm::normalize(glm::cross(up, cameraDirection));
 
-        glm::vec3 cameraUp = glm::cross(cameraDirection, cameraRight);
+        //glm::vec3 cameraUp = glm::cross(cameraDirection, cameraRight);
 
 
         // Transformations for cube we will draw them using 10 draw calls too
