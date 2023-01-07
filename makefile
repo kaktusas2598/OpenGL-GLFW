@@ -24,12 +24,12 @@ $(PCH_OUT): $(PCH_SRC) $(PCH_HEADERS)
 UNAME := $(shell uname -s)
 # For Mac
 ifeq ($(UNAME),Darwin)
-LDF+= -lglfw3 -lGL -lGLU -lglut -lGLEW -lm -ld# -lglu32
+LDF+= -lglfw3 -lGL -lGLU -lglut -lGLEW -lassimp -lm -ld# -lglu32
 else ifeq ($(UNAME),Linux)
-LDF+= -lglfw -lGL -lGLU -lglut -lGLEW -lm
+LDF+= -lglfw -lGL -lGLU -lglut -lGLEW  -lassimp -lm
 else
 # For Windows using MSYS2/MING or Cygwin
-LDF+= -lmingw32 -mwindows -lglfw3 -lgdi32 -lglew32  -lopengl32 -lm
+LDF+= -lmingw32 -mwindows -lglfw3 -lgdi32 -lglew32 -lassimp -lopengl32 -lm
 endif
 
 INCLUDE_PATHS = -I/usr/local/include -I/opt/X11/include -Isrc/vendor
