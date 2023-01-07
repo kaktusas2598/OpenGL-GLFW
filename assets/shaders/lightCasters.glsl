@@ -82,8 +82,8 @@ uniform vec3 viewPosition;
 
 // These methods are absolutely not optimal, contains a lot of duplication
 vec3 calculateDirLight(DirectionalLight light, vec3 normal, vec3 viewDirection);
-vec3 calculatePointLight(PointLight light, vec3 normal, vec3 viewDirection);
-vec3 calculateSpotLight(SpotLight light, vec3 normal, vec3 viewDirection);
+vec3 calculatePointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDirection);
+vec3 calculateSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDirection);
 
 void main() {
     vec3 outputColor = vec3(0.0);
@@ -92,8 +92,8 @@ void main() {
 
     outputColor += calculateDirLight(dirLight, norm, viewDirection);
     // TODO: add more point lightss
-    outputColor += calculatePointLight(pointLight, norm, viewDirection);
-    outputColor += calculateSpotLight(spotLight, norm, viewDirection);
+    outputColor += calculatePointLight(pointLight, norm, v_fragPos, viewDirection);
+    outputColor += calculateSpotLight(spotLight, norm, v_fragPos, viewDirection);
 
     color = vec4(outputColor, 1.0);
 }
@@ -111,13 +111,13 @@ vec3 calculateDirLight(DirectionalLight light, vec3 normal, vec3 viewDirection) 
     return (ambient + specular + diffuse);
 }
 
-vec3 calculatePointLight(PointLight light, vec3 normal, vec3 viewDirection) {
-    vec3 lightDirection = normalize(light.position - v_fragPos);
+vec3 calculatePointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDirection) {
+    vec3 lightDirection = normalize(light.position - fragPos);
     float diff = max(dot(normal, lightDirection), 0.0);
     vec3 reflectDirection = reflect(-lightDirection, normal);
     float spec = pow(max(dot(viewDirection, reflectDirection), 0.0), material.shininess);
     // attenuation
-    float distance = length(light.position - v_fragPos);
+    float distance = length(light.position - fragPos);
     float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));
 
     vec3 ambient = light.ambient * vec3(texture(material.diffuseMap, v_texCoords));
@@ -130,8 +130,8 @@ vec3 calculatePointLight(PointLight light, vec3 normal, vec3 viewDirection) {
     return (ambient + specular + diffuse);
 }
 
-vec3 calculateSpotLight(SpotLight light, vec3 normal, vec3 viewDirection) {
-    vec3 lightDirection = normalize(light.position - v_fragPos);
+vec3 calculateSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDirection) {
+    vec3 lightDirection = normalize(light.position - fragPos);
     float theta = dot(lightDirection, normalize(-light.direction));
     // Determine if we're inside of spotlight
     if (theta > light.cutOff) {
