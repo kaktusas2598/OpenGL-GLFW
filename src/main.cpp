@@ -29,6 +29,7 @@
 #include "tests/TestLighting.hpp"
 #include "tests/TestMaterials.hpp"
 #include "tests/TestDiffuseSpecularMaps.hpp"
+#include "tests/TestLightCasters.hpp"
 
 float lastX, lastY;
 bool firstMouse;
@@ -194,6 +195,7 @@ int main(void) {
     testMenu->registerTest<test::TestLighting>("Basic Phong Lighting");
     testMenu->registerTest<test::TestMaterials>("Materials Demo");
     testMenu->registerTest<test::TestDiffuseSpecularMaps>("Diffuse and Specular light mapping");
+    testMenu->registerTest<test::TestLightCasters>("Directional, point and spot lights");
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window)) {
