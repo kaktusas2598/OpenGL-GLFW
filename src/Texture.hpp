@@ -13,11 +13,15 @@ class Texture {
 
         inline int getWidth() const { return width; }
         inline int getHeight() const { return height; }
+
+        void setType(std::string& t) { type = t; }
+        inline std::string getType() const { return type; }
     private:
         unsigned int rendererID;
         std::string filePath;
         unsigned char* localBuffer;
         int width, height, BPP; // Bits per picture
+        std::string type;
 };
 
 #endif // __Texture__

@@ -32,6 +32,13 @@ struct Material {
     sampler2D diffuseMap;
     sampler2D specularMap;
     float shininess;
+
+    // For models
+    sampler2D texture_diffuse1;
+    sampler2D texture_diffuse2;
+    sampler2D texture_diffuse3;
+    sampler2D texture_specular1;
+    sampler2D texture_specular2;
 };
 
 struct DirectionalLight {
