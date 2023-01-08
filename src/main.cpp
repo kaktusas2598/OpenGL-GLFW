@@ -30,6 +30,7 @@
 #include "tests/TestMaterials.hpp"
 #include "tests/TestDiffuseSpecularMaps.hpp"
 #include "tests/TestLightCasters.hpp"
+#include "tests/TestModel.hpp"
 
 float lastX, lastY;
 bool firstMouse;
@@ -196,6 +197,7 @@ int main(void) {
     testMenu->registerTest<test::TestMaterials>("Materials Demo");
     testMenu->registerTest<test::TestDiffuseSpecularMaps>("Diffuse and Specular light mapping");
     testMenu->registerTest<test::TestLightCasters>("Directional, point and spot lights");
+    testMenu->registerTest<test::TestModel>("3D Model Loading using Assimp");
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window)) {
