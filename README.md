@@ -28,3 +28,10 @@ pacman -S mingw-w64-x86_64-assimp
  * [stb_image](https://github.com/nothings/stb) - For texture loading
  * [assimp](https://github.com/assimp/assimp) - For 3D model loading(waveform for now)
  * [ImGui](https://github.com/ocornut/imgui) - For UI
+
+### TODO
+
+ * Fix point lights
+ * Fix spot lights
+ * Implement proper UV mapping for 3D Models
+ * Implement sprite class, which possibly uses batch renderer
