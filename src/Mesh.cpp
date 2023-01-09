@@ -23,6 +23,7 @@ void Mesh::draw(Shader &shader) {
         else if (type == "texture_specular")
             slot = std::to_string(specularIndex++);
 
+        // TODO: need to check if color set when loading mesh and pass color as uniform here as well
         shader.setUniform1i("material." + type + slot, i);
     }
 
