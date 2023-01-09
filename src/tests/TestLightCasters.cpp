@@ -29,7 +29,7 @@ namespace test {
         //free(monitor);
         //free(mode);
 
-        // position, normal
+        // position, normal, tex coords
         float positions [] = {
             // FRONT
             -0.5f, -0.5f, -1.0f,  0.0f, 0.0f, 1.0f, 1.0f, 1.0f, // 0
@@ -175,12 +175,12 @@ namespace test {
         lightingShader->setUniform1f("material.shininess", 32.0f);
 
         lightingShader->setUniformVec3("dirLight.direction", lightDirection);
-        lightingShader->setUniformVec3("dirLight.ambient", dirLightColor * glm::vec3(0.2f));
+        lightingShader->setUniformVec3("dirLight.ambient", dirLightColor * glm::vec3(0.1f));
         lightingShader->setUniformVec3("dirLight.diffuse", dirLightColor * glm::vec3(0.5f));
         lightingShader->setUniform3f("dirLight.specular", 1.0f, 1.0f, 1.0f);
 
         lightingShader->setUniformVec3("pointLight.position", lightPosition);
-        lightingShader->setUniformVec3("pointLight.ambient", pointLightColor * glm::vec3(0.5f));
+        lightingShader->setUniformVec3("pointLight.ambient", pointLightColor * glm::vec3(0.1f));
         lightingShader->setUniformVec3("pointLight.diffuse", pointLightColor * glm::vec3(0.2f));
         lightingShader->setUniform3f("pointLight.specular", 1.0f, 1.0f, 1.0f);
         lightingShader->setUniform1f("pointLight.constant", constant);
@@ -198,7 +198,6 @@ namespace test {
         lightingShader->setUniform3f("spotLight.specular", 1.0f, 1.0f, 1.0f);
 
 
-        //lightingShader->setUniform3f("viewPosition", camera->Position.x, camera->Position.y, camera->Position.z);
         lightingShader->setUniformVec3("viewPosition", camera->Position);
 
         lightingShader->setUniformMat4f("projection", proj);
@@ -247,8 +246,6 @@ namespace test {
         ImGui::Text("Spot light");
         ImGui::ColorEdit3("S color", (float*)&spotLightColor);
         ImGui::Text("X: %f, Y: %f. Z: %f", camera->Position.x, camera->Position.y, camera->Position.z);
-        ImGui::Text("Camera Y: %f", camera->Position.y);
-        ImGui::Text("Camera Z: %f", camera->Position.z);
     }
 }
 
