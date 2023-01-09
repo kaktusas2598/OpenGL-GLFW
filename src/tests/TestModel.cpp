@@ -157,19 +157,6 @@ namespace test {
 
         glm::mat4 model;
 
-        glm::vec3 cubePositions[] = {
-            glm::vec3(0.0f, 0.0f, 0.0f),
-            glm::vec3(3.0f, -5.0f, -15.0f),
-            glm::vec3(-5.5f, 5.0f, -2.5f),
-            glm::vec3(-3.8, -12.2, -12.3),
-            glm::vec3(-2.4, -8.4f, -3.5f),
-            glm::vec3(-1.7f, 6.0f, -7.5f),
-            glm::vec3(14.3f, -2.0f, -2.5f),
-            glm::vec3(1.5f, 17.0f, -3.5f),
-            glm::vec3(11.5f, 5.2f, -1.5f),
-            glm::vec3(-1.3f, 1.0f, -1.5f)
-        };
-
         Renderer renderer;
 
         lightingShader->bind();
@@ -205,22 +192,7 @@ namespace test {
         lightingShader->setUniformMat4f("projection", proj);
         lightingShader->setUniformMat4f("view", view);
 
-        // Render each object seperately using model matrix which is easy, but batch rendering is faster
-        // need to learn instancing as well
-        for (unsigned int i = 0; i < 10; i++) {
-            model = glm::translate(glm::mat4(1.0f), cubePositions[i]);
-            //model = glm::rotate(model, (float)glfwGetTime(), glm::vec3(0.5, 1.0, 0.0));
-            // If we applied a non-uniform scale here, it would change direction for normals and
-            // thus would distorn lighting, to solve that we could use different model matrix
-            // for lighting called - normal matrix
-            model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
-
-            lightingShader->setUniformMat4f("model", model);
-
-            renderer.draw(*vao, *ibo, *lightingShader);
-        }
-
-        model = glm::scale(model, glm::vec3(20.0f, 20.0f, 20.0f));
+        model = glm::scale(glm::mat4(1.0), glm::vec3(10.0f, 10.0f, 10.0f));
         lightingShader->setUniformMat4f("model", model);
         model3d->draw(*lightingShader);
 

@@ -160,7 +160,6 @@ int main(void) {
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO(); (void)io;
 
-
     //imgui style
     ImGui::StyleColorsDark();
 
@@ -172,6 +171,8 @@ int main(void) {
 
     GLCall(glEnable(GL_BLEND));
     GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
+
+    glViewport(0, 0, screenWidth, screenHeight);
 
     camera = new Camera(glm::vec3(0.0f, 0.0f, 3.0f));
 
