@@ -106,13 +106,13 @@ namespace test {
         lightingShader = std::make_unique<Shader>("assets/shaders/models.glsl");
         lightingShader->bind();
 
-        diffuseMap = std::make_unique<Texture>("assets/textures/container.png");
-        specularMap = std::make_unique<Texture>("assets/textures/container_specular.png");
+        //diffuseMap = std::make_unique<Texture>("assets/textures/container.png");
+        //specularMap = std::make_unique<Texture>("assets/textures/container_specular.png");
 	// Bind both maps to different slots and set uniforms
-        diffuseMap->bind();
-	specularMap->bind(1);
-        lightingShader->setUniform1i("material.diffuseMap", 0);
-        lightingShader->setUniform1i("material.specularMap", 1);
+        //diffuseMap->bind();
+	//specularMap->bind(1);
+        //lightingShader->setUniform1i("material.diffuseMap", 0);
+        //lightingShader->setUniform1i("material.specularMap", 1);
 
         lightSourceShader = std::make_unique<Shader>("assets/shaders/lightSourceVariableColor.glsl");
 
@@ -144,8 +144,8 @@ namespace test {
     void TestModel::onRender() {
         GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
-        diffuseMap->bind(); // bound to default slot 0
-	specularMap->bind(1);
+        //diffuseMap->bind(); // bound to default slot 0
+	//specularMap->bind(1);
 
         // First param - FOV could be changed for zooming effect
         // 2nd param - aspect ratio

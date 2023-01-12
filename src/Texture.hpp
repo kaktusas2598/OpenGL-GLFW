@@ -16,6 +16,8 @@ class Texture {
 
         void setType(std::string& t) { type = t; }
         inline std::string getType() const { return type; }
+
+        unsigned int getID() { return rendererID; }
     private:
         unsigned int rendererID;
         std::string filePath;

@@ -40,7 +40,7 @@ void Model::processNode(aiNode* node, const aiScene* scene) {
 Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene) {
     std::vector<Vertex> vertices;
     std::vector<unsigned int> indices;
-    std::vector<Texture> textures;
+    std::vector<Texture*> textures;
 
     for (unsigned int i = 0; i < mesh->mNumVertices; i++) {
         Vertex vertex;
@@ -75,26 +75,33 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene) {
             indices.push_back(face.mIndices[j]);
     }
 
+    glm::vec4 diffuseColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
     if (mesh->mMaterialIndex >= 0) {
         aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
-        std::vector<Texture> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
-        textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
-        std::vector<Texture> specularMaps = loadMaterialTextures(material, aiTextureType_SPECULAR, "texture_specular");
-        textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
+
+        aiColor4D diffuse;
+        if (AI_SUCCESS == aiGetMaterialColor(material, AI_MATKEY_COLOR_DIFFUSE, &diffuse)) {
+            diffuseColor = glm::vec4(diffuse.r, diffuse.g, diffuse.b, diffuse.a);
+        }
+
+        std::vector<Texture*>* diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
+        textures.insert(textures.end(), diffuseMaps->begin(), diffuseMaps->end());
+        std::vector<Texture*>* specularMaps = loadMaterialTextures(material, aiTextureType_SPECULAR, "texture_specular");
+        textures.insert(textures.end(), specularMaps->begin(), specularMaps->end());
     }
 
-    return Mesh(vertices, indices, textures);
+    return Mesh(vertices, indices, textures, diffuseColor);
 }
 
-std::vector<Texture> Model::loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName) {
+std::vector<Texture*>* Model::loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName) {
     // TODO: In actual application you would check if texture was not already loaded by asset manager or sth like that
-    std::vector<Texture> textures;
+    std::vector<Texture*>* textures = new std::vector<Texture*>();
     for (unsigned int i = 0; i < mat->GetTextureCount(type); i++) {
         aiString str;
         mat->GetTexture(type, i, &str);
-        Texture texture(str.C_Str()); //directory
-        texture.setType(typeName);
-        textures.push_back(texture);
+        Texture* texture = new Texture(str.C_Str()); //directory
+        texture->setType(typeName);
+        textures->push_back(texture);
     }
 
     return textures;

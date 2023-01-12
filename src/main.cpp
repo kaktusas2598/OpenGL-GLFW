@@ -190,6 +190,7 @@ int main(void) {
     testMenu->registerTest<test::TestTexture2D>("2D Textures");
     testMenu->registerTest<test::TestBatchRendering>("Batch rendering");
     testMenu->registerTest<test::TestDynamicBatchRendering>("Batch rendering (dynamic geometry)");
+    // FIXME: starting from the followin test, it breaks previous tests if switching between this one and previous
     testMenu->registerTest<test::TestCube3D>("3D Cube");
     testMenu->registerTest<test::TestTexturedCube>("3D Cube (textured)");
     testMenu->registerTest<test::TestCamera>("Camera Example");

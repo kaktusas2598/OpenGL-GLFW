@@ -12,10 +12,17 @@ class Mesh {
     public:
         std::vector<Vertex> Vertices;
         std::vector<unsigned int> Indices;
-        std::vector<Texture> Textures;
+        std::vector<Texture*> Textures;
 
-        Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures);
+        glm::vec4 diffuseColor;
+
+        Mesh(std::vector<Vertex> vertices,
+                std::vector<unsigned int> indices,
+                std::vector<Texture*> textures,
+                glm::vec4 diffuse = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
         void draw(Shader &shader);
+        // TODO: delete textures in here?
+        // ~Mesh() {}
     private:
         //unsigned int VBO, VAO, EBO;
         std::unique_ptr<VertexArray> vao;

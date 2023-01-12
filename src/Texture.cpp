@@ -2,12 +2,15 @@
 
 #include "stb_image.h"
 
+#include <iostream>
+
 Texture::Texture(const std::string& fileName)
     : rendererID(0), filePath(fileName), localBuffer(nullptr), width(0), height(0), BPP(0) {
 
     // Not sure why I need to flip texture for GL
     stbi_set_flip_vertically_on_load(1);
 
+    std::cout << "Loading texture: " << fileName.c_str() << std::endl;
     localBuffer = stbi_load(fileName.c_str(), &width, &height, &BPP, 4);
 
     GLCall(glGenTextures(1, &rendererID));
@@ -30,6 +33,7 @@ Texture::Texture(const std::string& fileName)
 }
 
 Texture::~Texture() {
+    std::cout << "Deleting texture: " << filePath << std::endl;
     GLCall(glDeleteTextures(1, &rendererID));
 }
 
