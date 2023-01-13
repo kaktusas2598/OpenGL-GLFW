@@ -93,6 +93,14 @@ vec3 calculateDirLight(DirectionalLight light, vec3 normal, vec3 viewDirection);
 vec3 calculatePointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDirection);
 vec3 calculateSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDirection);
 
+float near = 0.1;
+float far = 100.0;
+// Utility method to make depth buffer values linear for perspective projection
+float linearizeDepth(float depth) {
+    float z = depth * 2.0 - 1.0; // Convert to NDC
+    return (2.0 * near * far) / (far + near - z * (far - near));
+}
+
 void main() {
     vec3 outputColor = vec3(0.0);
     vec3 norm = normalize(v_normal);
@@ -104,6 +112,10 @@ void main() {
     outputColor += calculateSpotLight(spotLight, norm, v_fragPos, viewDirection);
 
     color = vec4(outputColor, 1.0);
+    // To visualise Depth Buffer:
+    //color = vec4(vec3(gl_FragCoord.z), 1.0);
+    // Linear Depth buffer values
+    //color = vec4(vec3(linearizeDepth(gl_FragCoord.z) / far), 1.0);
 }
 
 vec3 calculateDirLight(DirectionalLight light, vec3 normal, vec3 viewDirection) {

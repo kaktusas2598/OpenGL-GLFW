@@ -75,6 +75,8 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene) {
             indices.push_back(face.mIndices[j]);
     }
 
+    // Set diffuse color for entire mesh and if it has any materials, set if from there
+    // including diffuse maps and other
     glm::vec4 diffuseColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
     if (mesh->mMaterialIndex >= 0) {
         aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
