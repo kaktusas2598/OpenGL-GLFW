@@ -242,6 +242,8 @@ namespace test {
         outlineShader->bind();
         outlineShader->setUniformMat4f("projection", proj);
         outlineShader->setUniformMat4f("view", view);
+        // disable stencil writing and only draw differences in size, resulting in objects
+        // having borders
         GLCall(glStencilFunc(GL_NOTEQUAL, 1, 0xFF));
         GLCall(glStencilMask(0x00));
         GLCall(glDisable(GL_DEPTH_TEST));
