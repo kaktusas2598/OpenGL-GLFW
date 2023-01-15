@@ -215,8 +215,8 @@ namespace test {
         // order them and draw from farest to the nearest
         std::map<float, glm::vec3> sortedObjects;
         for (unsigned int i = 0; i < windows.size(); i++) {
-            float distanceSquared = glm::length(camera->Position - windows[i]);
-            sortedObjects[distanceSquared] = windows[i];
+            float distance= glm::length(camera->Position - windows[i]);
+            sortedObjects[distance] = windows[i];
         }
 
         Renderer renderer;
