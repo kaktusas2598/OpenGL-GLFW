@@ -32,6 +32,7 @@
 #include "tests/TestLightCasters.hpp"
 #include "tests/TestModel.hpp"
 #include "tests/TestStencil.hpp"
+#include "tests/TestBlending.hpp"
 
 float lastX, lastY;
 bool firstMouse;
@@ -201,7 +202,8 @@ int main(void) {
     testMenu->registerTest<test::TestDiffuseSpecularMaps>("Diffuse and Specular light mapping");
     testMenu->registerTest<test::TestLightCasters>("Directional, point and spot lights");
     testMenu->registerTest<test::TestModel>("3D Model Loading using Assimp");
-    testMenu->registerTest<test::TestStencil>("Selecting objects using stencil buffer");
+    testMenu->registerTest<test::TestStencil>("Selecting objects using stencil and depth buffers");
+    testMenu->registerTest<test::TestBlending>("Blending Demo");
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window)) {
