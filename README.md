@@ -19,8 +19,17 @@ pacman -S mingw-w64-x86_64-glew
 pacman -S mingw-w64-x86_64-assimp
 ```
 
+To run:
+
+```
+./configure.sh
+./build.sh
+./run.sh
+```
+
 ### Used Libraries
 
+ * [CMake](https://cmake.org/) - For building
  * [OpenGL](https://www.opengl.org/) - Rendering API
  * [GLFW](https://www.glfw.org/) - Windowing and input events
  * [GLEW](https://glew.sourceforge.net/) - GL Extension loading library
