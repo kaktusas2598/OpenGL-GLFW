@@ -33,6 +33,7 @@
 #include "tests/TestModel.hpp"
 #include "tests/TestStencil.hpp"
 #include "tests/TestBlending.hpp"
+#include "tests/TestFramebuffers.hpp"
 
 float lastX, lastY;
 bool firstMouse;
@@ -193,6 +194,9 @@ int main(void) {
     testMenu->registerTest<test::TestBatchRendering>("Batch rendering");
     testMenu->registerTest<test::TestDynamicBatchRendering>("Batch rendering (dynamic geometry)");
     // FIXME: starting from the followin test, it breaks previous tests if switching between this one and previous
+    // UPDATE: They break because following tests enable depth test and does not disable, 2 ways to fix it:
+    // 1. glDisable(GL_DEPTH_TEST) in test destructor
+    // 2. Add z coordinate to the first 3 tests
     testMenu->registerTest<test::TestCube3D>("3D Cube");
     testMenu->registerTest<test::TestTexturedCube>("3D Cube (textured)");
     testMenu->registerTest<test::TestCamera>("Camera Example");
@@ -203,7 +207,8 @@ int main(void) {
     testMenu->registerTest<test::TestLightCasters>("Directional, point and spot lights");
     testMenu->registerTest<test::TestModel>("3D Model Loading using Assimp");
     testMenu->registerTest<test::TestStencil>("Selecting objects using stencil and depth buffers");
-    testMenu->registerTest<test::TestBlending>("Blending Demo");
+    testMenu->registerTest<test::TestBlending>("Blending");
+    testMenu->registerTest<test::TestFramebuffers>("Framebuffers");
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window)) {
