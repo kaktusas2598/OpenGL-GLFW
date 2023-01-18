@@ -34,6 +34,7 @@
 #include "tests/TestStencil.hpp"
 #include "tests/TestBlending.hpp"
 #include "tests/TestFramebuffers.hpp"
+#include "tests/TestCubemaps.hpp"
 
 float lastX, lastY;
 bool firstMouse;
@@ -209,6 +210,7 @@ int main(void) {
     testMenu->registerTest<test::TestStencil>("Selecting objects using stencil and depth buffers");
     testMenu->registerTest<test::TestBlending>("Blending");
     testMenu->registerTest<test::TestFramebuffers>("Framebuffers");
+    testMenu->registerTest<test::TestCubemaps>("Cubemap textures");
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window)) {
