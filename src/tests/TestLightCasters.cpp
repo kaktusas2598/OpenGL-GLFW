@@ -193,6 +193,7 @@ namespace test {
         lightingShader->setUniformVec3("spotLight.position", camera->Position);
         lightingShader->setUniformVec3("spotLight.direction", camera->Front);
         lightingShader->setUniform1f("spotLight.cutOff", glm::cos(glm::radians(12.5f)));
+        lightingShader->setUniform1f("spotLight.outerCutOff", glm::cos(glm::radians(17.5f)));
         lightingShader->setUniformVec3("spotLight.ambient", spotLightColor * glm::vec3(0.2f));
         lightingShader->setUniformVec3("spotLight.diffuse", spotLightColor * glm::vec3(0.9f));
         lightingShader->setUniform3f("spotLight.specular", 1.0f, 1.0f, 1.0f);
