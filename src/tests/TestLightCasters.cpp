@@ -117,7 +117,7 @@ namespace test {
 
         lightSourceShader = std::make_unique<Shader>("assets/shaders/lightSourceVariableColor.glsl");
 
-        lightPosition = glm::vec3(1.0f, 2.0f, -10.0f);
+        lightPosition = glm::vec3(1.0f, 2.0f, -1.0f);
         lightDirection = glm::vec3(-0.2f, -1.0f, -0.3f);
 
         // Light color variation over time
@@ -129,9 +129,12 @@ namespace test {
         pointLightColor = glm::vec3(1.0f, 0.0f, 0.0f);
         spotLightColor = glm::vec3(1.0f, 1.0f, 0.0f);
 
+        // Values used from Ogre3D engine:
+        // https://wiki.ogre3d.org/tiki-index.php?page=-Point+Light+Attenuation
+        // For distance of 200
         constant = 1.0f;
-        linear = 0.35f;
-        quadratic = 0.44f;
+        linear = 0.022f;
+        quadratic = 0.0019f;
     }
 
     TestLightCasters::~TestLightCasters() {
@@ -242,8 +245,6 @@ namespace test {
         ImGui::SliderFloat("Position X", &lightPosition.x, -10.0f, 10.0f);
         ImGui::SliderFloat("Position Y", &lightPosition.y, -10.0f, 10.0f);
         ImGui::SliderFloat("Position Z", &lightPosition.z, -10.0f, 10.0f);
-        ImGui::SliderFloat("linear", &linear, 1.0f, 0.01f);
-        ImGui::SliderFloat("quadratic", &quadratic, 5.0f, 0.0001f);
         ImGui::Text("Spot light");
         ImGui::ColorEdit3("S color", (float*)&spotLightColor);
         ImGui::Text("X: %f, Y: %f. Z: %f", camera->Position.x, camera->Position.y, camera->Position.z);
