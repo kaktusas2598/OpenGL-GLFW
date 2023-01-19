@@ -1,6 +1,5 @@
 # OpenGL-GLFW
-OpenGL-GLFW
-
+OpenGL tests
 
 This repository is mainly for learning modern OpenGL.
 
@@ -43,3 +42,8 @@ To run:
  * Add attenuation to spot lights
  * Implement proper UV mapping for 3D Models
  * Implement sprite class, which possibly uses batch renderer
+ * Better renderer, indexed and non indexed draws, batching
+
+### FIXME
+
+ * Stencil test

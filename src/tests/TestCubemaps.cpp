@@ -147,8 +147,8 @@ namespace test {
         spotLightColor = glm::vec3(1.0f, 1.0f, 0.0f);
 
         constant = 1.0f;
-        linear = 0.35f;
-        quadratic = 0.44f;
+        linear = 0.022f;
+        quadratic = 0.0019f;
 
         //--- Framebuffer Configuration ---///
         //--------------------------------///
@@ -281,6 +281,7 @@ namespace test {
         objectShader->setUniformVec3("spotLight.position", camera->Position);
         objectShader->setUniformVec3("spotLight.direction", camera->Front);
         objectShader->setUniform1f("spotLight.cutOff", glm::cos(glm::radians(12.5f)));
+        objectShader->setUniform1f("spotLight.outerCutOff", glm::cos(glm::radians(17.5f)));
         objectShader->setUniformVec3("spotLight.ambient", spotLightColor * glm::vec3(0.2f));
         objectShader->setUniformVec3("spotLight.diffuse", spotLightColor * glm::vec3(0.9f));
         objectShader->setUniform3f("spotLight.specular", 1.0f, 1.0f, 1.0f);
