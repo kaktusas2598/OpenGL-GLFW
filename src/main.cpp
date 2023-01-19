@@ -103,6 +103,17 @@ void processInput(GLFWwindow* window, Camera* camera, float deltaTime) {
                 break;
         }
     }
+
+    // Toggle fullscreen/ windowed mode
+    if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS) {
+        if (glfwGetWindowMonitor(window)!= nullptr) {
+            glfwSetWindowMonitor(window, NULL, 0, 0, 1920, 1080, 0);
+        } else {
+            GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+            const GLFWvidmode* mode = glfwGetVideoMode(monitor);
+            glfwSetWindowMonitor(window, monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
+        }
+    }
 }
 
 int main(void) {
@@ -248,12 +259,16 @@ int main(void) {
                 glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
             else
                 glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+            ImGui::Separator();
             ImGui::ColorEdit4("Clear color", clearColor);
             ImGui::Checkbox("Wireframe mode", &wireframe_mode);
             ImGui::Checkbox("Demo Window", &show_demo_window);
             ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
             if(ImGui::Button("Close Application"))
                 glfwSetWindowShouldClose(window, 1);
+            ImGui::Separator();
+            ImGui::Text("F - toggle fullscreen");
+            ImGui::Text("C - toggle cursor");
 
             ImGui::End();
         }

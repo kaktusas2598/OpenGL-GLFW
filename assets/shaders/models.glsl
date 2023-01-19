@@ -67,6 +67,7 @@ struct SpotLight {
     vec3 position;
     vec3 direction;
     float cutOff;
+    float outerCutOff;
 
     vec3 ambient;
     vec3 diffuse;
@@ -153,25 +154,20 @@ vec3 calculatePointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewD
 vec3 calculateSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDirection) {
     vec3 lightDirection = normalize(light.position - fragPos);
     float theta = dot(lightDirection, normalize(-light.direction));
-    //float epsilon = ligh.cutOff - light.outerCutOff;
-    //float intensity = clamp(theta - light.outerCutOff) / epsilon, 0.0, 1.0);
-    //diffuse *= intensity;
-    // Determine if we're inside of spotlight
-    if (theta > light.cutOff) {
-        // Do lighting calculations, pretty much same as dir light here, point light would be better
-        // with attenuation
-        float diff = max(dot(normal, lightDirection), 0.0);
-        vec3 reflectDirection = reflect(-lightDirection, normal);
-        float spec = pow(max(dot(viewDirection, reflectDirection), 0.0), material.shininess);
+    float epsilon = light.cutOff - light.outerCutOff;
+    float intensity = clamp((theta - light.outerCutOff) / epsilon, 0.0, 1.0);
+    // Do lighting calculations, pretty much same as dir light here, point light would be better
+    // with attenuation
+    float diff = max(dot(normal, lightDirection), 0.0);
+    vec3 reflectDirection = reflect(-lightDirection, normal);
+    float spec = pow(max(dot(viewDirection, reflectDirection), 0.0), material.shininess);
 
-        vec3 ambient = light.ambient * vec3(texture(material.texture_diffuse1, v_texCoords));
-        vec3 diffuse = light.diffuse * diff * vec3(texture(material.texture_diffuse1, v_texCoords)) * material.diffuseColor.xyz;
-        vec3 specular = light.specular * spec * vec3(texture(material.texture_specular1, v_texCoords));
+    vec3 ambient = light.ambient * vec3(texture(material.texture_diffuse1, v_texCoords));
+    vec3 diffuse = light.diffuse * diff * vec3(texture(material.texture_diffuse1, v_texCoords)) * material.diffuseColor.xyz;
+    vec3 specular = light.specular * spec * vec3(texture(material.texture_specular1, v_texCoords));
 
-        return (ambient + specular + diffuse);
-    } else {
-        return vec3(0.0);
-        // Just return ambient light if outside spotlight to keep scene lit
-        //return light.ambient * vec3(texture(material.diffuseMap, v_texCoords));
-    }
+    diffuse *= intensity;
+    specular *= intensity;
+
+    return (ambient + specular + diffuse);
 }

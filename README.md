@@ -1,6 +1,10 @@
 # OpenGL-GLFW
 OpenGL tests
 
+![Skybox](assets/screenshots/screenshot1.png?raw=true "Cubemap Demo")
+![Donut](assets/screenshots/screenshot2.png?raw=true "Model Demo")
+![PostProcessing](assets/screenshots/screenshot3.png?raw=true "Framebuffer Demo")
+
 This repository is mainly for learning modern OpenGL.
 
 This time I chose GLFW for windowing and events instead of my usual SDL2 just for fun
