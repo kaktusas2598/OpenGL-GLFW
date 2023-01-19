@@ -41,6 +41,5 @@ To run:
 ### TODO
 
  * Fix point lights
- * Fix spot lights
  * Implement proper UV mapping for 3D Models
  * Implement sprite class, which possibly uses batch renderer
