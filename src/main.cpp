@@ -205,6 +205,7 @@ int main(void) {
     testMenu->registerTest<test::TestLighting>("Basic Phong Lighting");
     testMenu->registerTest<test::TestMaterials>("Materials Demo");
     testMenu->registerTest<test::TestDiffuseSpecularMaps>("Diffuse and Specular light mapping");
+    // FIXME: point light and spot lighs are not woring properly
     testMenu->registerTest<test::TestLightCasters>("Directional, point and spot lights");
     testMenu->registerTest<test::TestModel>("3D Model Loading using Assimp");
     testMenu->registerTest<test::TestStencil>("Selecting objects using stencil and depth buffers");
