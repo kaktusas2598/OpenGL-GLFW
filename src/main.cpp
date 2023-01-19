@@ -185,7 +185,7 @@ int main(void) {
     Renderer renderer;
     bool show_demo_window = false;
     bool wireframe_mode = false;
-    float clearColor[4];
+    float clearColor[4] = {0.0f, 0.0f, 0.0f, 1.0f};
 
     test::Test* currentTest = nullptr;
     test::TestMenu* testMenu = new test::TestMenu(currentTest);
