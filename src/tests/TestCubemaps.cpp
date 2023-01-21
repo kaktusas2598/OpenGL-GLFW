@@ -126,16 +126,16 @@ namespace test {
         floorVao->addBuffer(*floorVbo, layout);
         floorIbo = std::make_unique<IndexBuffer>(floorIndices, 6);
 
-        objectShader = std::make_unique<Shader>("assets/shaders/lightCasters.glsl");
+        objectShader = std::make_unique<Shader>("assets/shaders/environmentMapping.glsl");
         objectShader->bind();
 
         diffuseMap = std::make_unique<Texture>("assets/textures/container.png");
         specularMap = std::make_unique<Texture>("assets/textures/container_specular.png");
 	// Bind both maps to different slots and set uniforms
-        diffuseMap->bind();
-	specularMap->bind(1);
         objectShader->setUniform1i("material.diffuseMap", 0);
         objectShader->setUniform1i("material.specularMap", 1);
+        // For environmental mapping (reflections, refractions
+        objectShader->setUniform1i("skybox", 2);
 
         lightSourceShader = std::make_unique<Shader>("assets/shaders/lightSourceVariableColor.glsl");
 
@@ -242,6 +242,7 @@ namespace test {
 
         diffuseMap->bind(); // bound to default slot 0
 	specularMap->bind(1);
+        cubemapTexture->bind(2);
 
         // First param - FOV could be changed for zooming effect
         // 2nd param - aspect ratio
@@ -291,6 +292,8 @@ namespace test {
         objectShader->setUniformMat4f("projection", proj);
         objectShader->setUniformMat4f("view", view);
 
+        objectShader->setUniform1i("reflectOn", reflect);
+        objectShader->setUniform1i("refractOn", refract);
         // Render floor
         model = glm::translate(glm::mat4(1.0f), cubePositions[0]);
         model = glm::scale(model, glm::vec3(5.0f, 1.0f, 5.0f));
@@ -329,6 +332,11 @@ namespace test {
     }
 
     void TestCubemaps::onImGuiRender() {
+        ImGui::Text("Environment mapping options");
+        ImGui::Checkbox("Reflect", &reflect);
+        ImGui::Checkbox("Refract", &refract);
+
+        ImGui::Separator();
     }
 }
 

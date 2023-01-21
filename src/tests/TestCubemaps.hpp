@@ -61,6 +61,9 @@ namespace test {
             std::unique_ptr<VertexBuffer> skyboxVbo;
             std::unique_ptr<Shader> cubemapShader;
             std::unique_ptr<Texture> cubemapTexture;
+
+            bool reflect = false;
+            bool refract = false;
     };
 }
 #endif // __TestCubemaps__
