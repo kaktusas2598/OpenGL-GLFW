@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.25.1)
+cmake_minimum_required(VERSION 3.22.1)
 
 # Setup project and set name
 project(OpenGLTest)
@@ -9,6 +9,9 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # includes cmake/FindSDL2.cmake
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR}/cmake)
+
+# Cmake will generate compile_commands.json file used by clangd
+set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
 
 # These require findPackageName.cmake file to be available
 # as an alternative we could use find_library() instead
@@ -33,5 +36,4 @@ target_include_directories(${PROJECT_NAME} PUBLIC vendor)
 #target_link_directories(${PROJECT_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/vendor)
 
 # Link libraries
-#file(GLOB SDL2_LIBS src/lib/*.a)
 target_link_libraries(${PROJECT_NAME} ${ASSIMP_LIBRARIES} ${GLEW_LIBRARIES} glfw glm imgui stb_image)
