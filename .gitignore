@@ -47,3 +47,6 @@ _deps
 # IDE Files, this might change in the future
 .vs
 .vscode
+
+# Clangd stuff
+.cache
