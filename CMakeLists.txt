@@ -8,7 +8,7 @@ set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # includes cmake/FindSDL2.cmake
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR}/cmake)
+#set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR}/cmake)
 
 # Cmake will generate compile_commands.json file used by clangd
 set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
@@ -17,10 +17,9 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
 # as an alternative we could use find_library() instead
 find_package(OpenGL REQUIRED)
 find_package(GLEW REQUIRED)
-find_package(glfw3 REQUIRED)
+#find_package(GLFW3 REQUIRED)
+#find_package(glfw3 REQUIRED
 find_package(ASSIMP REQUIRED)
-include_directories(${LUA_INCLUDE_DIR})
-include_directories(${SDL2_INCLUDE_DIR})
 include_directories(${GLEW_INCLUDE_DIRS})
 
 file(GLOB sources src/*.cpp)
@@ -28,12 +27,16 @@ file(GLOB test_sources src/tests/*.cpp)
 add_executable(${PROJECT_NAME} ${sources} ${test_sources})
 
 add_subdirectory(src/vendor/glm)
+add_subdirectory(src/vendor/glfw)
 add_subdirectory(src/vendor/imgui)
 add_library(stb_image "src/vendor/stb_image.cpp")
 
 target_include_directories(${PROJECT_NAME} PUBLIC vendor)
 #target_link_directories(${PROJECT_NAME} PUBLIC vendor)
-#target_link_directories(${PROJECT_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/vendor)
+target_link_directories(${PROJECT_NAME}
+    PUBLIC src/vendor/glfw/src
+    )
 
 # Link libraries
-target_link_libraries(${PROJECT_NAME} ${ASSIMP_LIBRARIES} ${GLEW_LIBRARIES} glfw glm imgui stb_image)
+#target_link_libraries(${PROJECT_NAME} ${ASSIMP_LIBRARIES} ${GLEW_LIBRARIES} ${GLFW3_LIBRARY} ${CMAKE_DL_LIBS}  glm imgui stb_image)
+target_link_libraries(${PROJECT_NAME} ${ASSIMP_LIBRARIES} ${OpenGL_LIBRARIES} ${GLEW_LIBRARIES} ${CMAKE_DL_LIBS} glfw glm imgui stb_image)
