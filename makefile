@@ -26,7 +26,7 @@ UNAME := $(shell uname -s)
 ifeq ($(UNAME),Darwin)
 LDF+= -lglfw3 -lGL -lGLU -lglut -lGLEW -lassimp -lm -ld# -lglu32
 else ifeq ($(UNAME),Linux)
-LDF+= -lglfw -lGL -lGLU -lglut -lGLEW  -lassimp -lm
+LDF+= -lglfw -lGL -lGLU -lglut -lGLEW  -lassimp -lm -ldl
 else
 # For Windows using MSYS2/MING or Cygwin
 LDF+= -lmingw32 -mwindows -lglfw3 -lgdi32 -lglew32 -lassimp -lopengl32 -lm
