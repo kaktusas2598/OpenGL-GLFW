@@ -8,4 +8,4 @@ include_directories(
     ${CMAKE_SOURCE_DIR}
     ${OPENGL_INCLUDE_DIR})
 
-target_link_libraries(imgui ${OPENGL_LIBRARIES} glfw3)
+target_link_libraries(imgui ${OPENGL_LIBRARIES} glfw)
