@@ -17,6 +17,7 @@ Only GLFW, GLEW and assimp needs to be installed to build this, then use make
 For MSYS2 using mingw64:
 
 ```
+pacman -S mingw-w64-x86_64-cmake
 pacman -S mingw-w64-x86_64-glfw
 pacman -S mingw-w64-x86_64-glew
 pacman -S mingw-w64-x86_64-assimp
