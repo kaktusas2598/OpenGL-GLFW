@@ -29,7 +29,7 @@ endif()
 
 file(GLOB sources src/*.cpp)
 file(GLOB test_sources src/tests/*.cpp)
-add_executable(${PROJECT_NAME} ${sources} ${test_sources})
+add_executable(${PROJECT_NAME} WIN32 ${sources} ${test_sources})
 
 add_subdirectory(src/vendor/glm)
 add_subdirectory(src/vendor/glfw)
