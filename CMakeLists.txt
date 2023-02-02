@@ -18,10 +18,10 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
 find_package(OpenGL REQUIRED)
 find_package(GLEW REQUIRED)
 #find_package(glfw3 REQUIRED)
-find_package(ASSIMP REQUIRED)
+find_package(assimp REQUIRED)
 include_directories(${GLEW_INCLUDE_DIRS})
 
-if(ASSIMP_FOUND)
+if(assimp_FOUND)
     message(STATUS "libAssimp found")
 else()
     message(STATUS "libAssimp not found")
@@ -43,4 +43,4 @@ message(STATUS "GLEW LIBRARY:${GLEW_LIBRARIES}")
 message(STATUS "OpenGL LIBRARY:${OpenGL_LIBRARIES}")
 
 # Link libraries
-target_link_libraries(${PROJECT_NAME} ${ASSIMP_LIBRARIES} ${OpenGL_LIBRARIES} ${GLEW_LIBRARIES} ${CMAKE_DL_LIBS} glfw glm imgui stb_image)
+target_link_libraries(${PROJECT_NAME} ${assimp_LIBRARIES} ${OpenGL_LIBRARIES} ${GLEW_LIBRARIES} ${CMAKE_DL_LIBS} glfw glm imgui stb_image)
