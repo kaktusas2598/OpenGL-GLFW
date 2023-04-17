@@ -225,6 +225,7 @@ namespace test {
         objectShader->setUniformMat4f("view", view);
 
         // Render floor
+        // FIXME: For some reason can still see object outlines through the floor, not sure where the problem is
         GLCall(glStencilMask(0x00)); // Make sure not to update stencil buffer while drawing floor
         model = glm::translate(glm::mat4(1.0f), cubePositions[0]);
         model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
