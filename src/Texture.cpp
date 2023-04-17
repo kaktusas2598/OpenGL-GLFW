@@ -16,16 +16,20 @@ Texture::Texture(const std::string& fileName)
     GLCall(glGenTextures(1, &rendererID));
     GLCall(glBindTexture(GL_TEXTURE_2D, rendererID));
 
-    // Tell open GL how to filter texture when minifying or magnifying
-    // how to wrap texture on x(s) and y(t) axis
-    GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
-    GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
-    GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));
-    GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
-    // TODO: do I need mipmap stuff?
-
     // Generate texture
     GLCall(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, localBuffer));
+    GLCall(glGenerateMipmap(GL_TEXTURE_2D));
+
+    // Tell open GL how to filter texture when minifying or magnifying
+    // how to wrap texture on x(s) and y(t) axis
+    GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR));
+    GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
+    GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT)); // To Fix Models!
+    GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT)); // To Fix Models!
+    //GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));
+    //GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
+    // TODO: do I need mipmap stuff?
+
     GLCall(glBindTexture(GL_TEXTURE_2D, 0));
 
     if (localBuffer)

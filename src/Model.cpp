@@ -14,7 +14,7 @@ void Model::loadModel(std::string path) {
     // and all primitives are triangles
     // Other useful options:
     // aiProcess_GenNormals
-    const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
+    const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate);// | aiProcess_FlipUVs);
 
     if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
         std::cout << "ASSIMP ERROR: " << importer.GetErrorString() << std::endl;

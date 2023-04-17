@@ -21,6 +21,8 @@ class Mesh {
                 std::vector<Texture*> textures,
                 glm::vec4 diffuse = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
         void draw(Shader &shader);
+        void drawInstanced(Shader &shader, unsigned int amount);
+        VertexArray* getVao() { return vao.get(); }
         // TODO: delete textures in here?
         // ~Mesh() {}
     private:

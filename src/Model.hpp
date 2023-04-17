@@ -13,6 +13,8 @@ class Model {
     public:
         Model (const char* path) { loadModel(path); }
         void draw(Shader& shader);
+
+        std::vector<Mesh>* getMeshes() { return &meshes; }
     private:
         std::vector<Mesh> meshes;
         std::string directory;
