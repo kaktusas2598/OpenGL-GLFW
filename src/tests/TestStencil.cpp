@@ -250,7 +250,7 @@ namespace test {
         GLCall(glStencilMask(0x00));
         GLCall(glDisable(GL_DEPTH_TEST));
         // Draw slightly upscaled cubes for outline
-        for (unsigned int i = 0; i < 10; i++) {
+        for (unsigned int i = 0; i < 3; i++) {
             model = glm::translate(glm::mat4(1.0f), cubePositions[i]);
             model = glm::scale(model, glm::vec3(2.05f, 2.05f, 2.05f));
             outlineShader->setUniformMat4f("model", model);

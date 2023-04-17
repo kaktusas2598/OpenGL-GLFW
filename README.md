@@ -51,5 +51,4 @@ To run:
 
 ### FIXME
 
- * Stencil test
  * Reflections and refractions are upside down
