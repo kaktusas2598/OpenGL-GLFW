@@ -32,6 +32,7 @@ class Renderer {
     public:
         void clear() const;
         void draw(const VertexArray& va, const IndexBuffer& ib, const Shader& shader) const;
+        void drawInstanced(const VertexArray& va, const IndexBuffer& ib, const Shader& shader, unsigned int instanceCount) const;
     private:
 };
 

@@ -25,6 +25,17 @@ void Renderer::draw(const VertexArray& va, const IndexBuffer& ib, const Shader& 
     GLCall(glDrawElements(GL_TRIANGLES, ib.getCount(), GL_UNSIGNED_INT, nullptr));
 }
 
+void Renderer::drawInstanced(const VertexArray& va, const IndexBuffer& ib, const Shader& shader, unsigned int instanceCount) const {
+    shader.bind();
+
+    // By using vertex array obbject, we dont need to bind array buffer and vertex attributes 2nd time
+    va.bind();
+    ib.bind();
+
+    // Needs index buffer object, but this way we save memory and vertex data is smaller
+    GLCall(glDrawElementsInstanced(GL_TRIANGLES, ib.getCount(), GL_UNSIGNED_INT, nullptr, instanceCount));
+}
+
 void Renderer::clear() const {
     // TODO: depth buffer and stencil buffer bits
     glClear(GL_COLOR_BUFFER_BIT);
