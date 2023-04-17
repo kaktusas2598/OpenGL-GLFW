@@ -35,6 +35,7 @@
 #include "tests/TestBlending.hpp"
 #include "tests/TestFramebuffers.hpp"
 #include "tests/TestCubemaps.hpp"
+#include "tests/TestInstancing.hpp"
 
 float lastX, lastY;
 bool firstMouse;
@@ -223,6 +224,7 @@ int main(void) {
     testMenu->registerTest<test::TestBlending>("Blending");
     testMenu->registerTest<test::TestFramebuffers>("Framebuffers");
     testMenu->registerTest<test::TestCubemaps>("Cubemap textures");
+    testMenu->registerTest<test::TestInstancing>("Instanced drawing");
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window)) {
