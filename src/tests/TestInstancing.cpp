@@ -9,7 +9,7 @@
 namespace test {
 
     const float NUM_CUBES = pow(10, 3);
-    const int NUM_ASTEROIDS = 100000;
+    const int NUM_ASTEROIDS = 20000;
 
     TestInstancing::TestInstancing() {
 
@@ -24,7 +24,7 @@ namespace test {
 
         // Setup data for instanced array for 1000 cubes rendered in one instanced call!
         int index = 0;
-        float offset = -10.0f;
+        float offset = -20.0f;
         for (int y = -50; y < 50; y += 10) {
             for (int x = -50; x < 50; x += 10) {
                 for (int z = -50; z < 50; z += 10) {
@@ -62,16 +62,15 @@ namespace test {
 
             //asteroidTransforms[i] = model;
         //}
-        unsigned int amount = 1000;
-        asteroidTransforms = new glm::mat4[amount];
+        asteroidTransforms = new glm::mat4[NUM_ASTEROIDS];
         srand(glfwGetTime()); // initialize random seed
-        float radius = 50.0;
-        offset = 2.5f;
-        for(unsigned int i = 0; i < amount; i++)
+        float radius = 35.0;
+        offset = 5.5f;
+        for(unsigned int i = 0; i < NUM_ASTEROIDS; i++)
         {
             glm::mat4 model = glm::mat4(1.0f);
             // 1. translation: displace along circle with 'radius' in range [-offset, offset]
-            float angle = (float)i / (float)amount * 360.0f;
+            float angle = (float)i / (float)NUM_ASTEROIDS * 360.0f;
             float displacement = (rand() % (int)(2 * offset * 100)) / 100.0f - offset;
             float x = sin(angle) * radius + displacement;
             displacement = (rand() % (int)(2 * offset * 100)) / 100.0f - offset;
@@ -189,7 +188,7 @@ namespace test {
         instanceMatrixShader = std::make_unique<Shader>("assets/shaders/instanceMatrix.glsl"); // For asteroids
         mvpTextureShader = std::make_unique<Shader>("assets/shaders/cube_textured.glsl"); // For planet
 
-        asteroidInstanceVbo = std::make_unique<VertexBuffer>(&asteroidTransforms[0], 1000 * sizeof(glm::mat4));
+        asteroidInstanceVbo = std::make_unique<VertexBuffer>(&asteroidTransforms[0], NUM_ASTEROIDS * sizeof(glm::mat4));
 
         for (unsigned int i = 0; i < rockModel->getMeshes()->size(); i++) {
             (*rockModel->getMeshes())[i].getVao()->bind();
@@ -244,8 +243,9 @@ namespace test {
         instanceMatrixShader->setUniform1i("u_texture", 0);
         for (unsigned int i = 0; i < rockModel->getMeshes()->size(); i++) {
             (*rockModel->getMeshes())[i].getVao()->bind();
-            // NOTE: segfault with 100k asteroids, works and tested with 1000
-            (*rockModel->getMeshes())[i].drawInstanced(*instanceMatrixShader, 1000);
+            // NOTE: Easily 60FPS with over 20k asteroids!
+            // Starts lagging at around 50k
+            (*rockModel->getMeshes())[i].drawInstanced(*instanceMatrixShader, NUM_ASTEROIDS);
             (*rockModel->getMeshes())[i].getVao()->unbind();
         }
     }
