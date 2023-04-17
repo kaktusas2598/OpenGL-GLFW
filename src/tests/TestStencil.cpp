@@ -258,7 +258,7 @@ namespace test {
         }
         GLCall(glStencilMask(0xFF));
         GLCall(glStencilFunc(GL_ALWAYS, 0, 0xFF));
-        GLCall(glDisable(GL_DEPTH_TEST));
+        GLCall(glEnable(GL_DEPTH_TEST));
 
         // Translate same cube and use light source shader to produce light source cube
         lightSourceShader->bind();
