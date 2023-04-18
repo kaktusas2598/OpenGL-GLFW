@@ -103,6 +103,8 @@ namespace test {
         // Set uniform to tell shader that we need to sample texture from slot 0
         shader->setUniform1i("u_Texture", 0);
 
+        glDisable(GL_DEPTH_TEST);
+
     }
 
     TestBatchRendering::~TestBatchRendering() {

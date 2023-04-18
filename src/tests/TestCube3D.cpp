@@ -97,10 +97,7 @@ namespace test {
 
     }
 
-    TestCube3D::~TestCube3D() {
-        // LACK OF THIS WOULD BREAK First 3 2D tests for some reason????
-        glDisable(GL_DEPTH_TEST);
-    }
+    TestCube3D::~TestCube3D() {}
 
     void TestCube3D::onUpdate(float deltaTime) {
     }

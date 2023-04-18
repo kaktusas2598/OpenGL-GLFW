@@ -136,6 +136,8 @@ namespace test {
         shader->setUniform1i("u_Texture", 0);
         texture2->bind(1);
         shader->setUniform1i("u_Texture", 1);
+
+        glDisable(GL_DEPTH_TEST);
     }
 
     TestDynamicBatchRendering::~TestDynamicBatchRendering() {
